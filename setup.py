@@ -57,5 +57,9 @@ def copy_config_files():
     except subprocess.CalledProcessError as e:
         print(f"Une erreur est survenue lors de la copie des fichiers : {e}")
 
+def reboot():
+    os.system('systemctl reboot -i')
+
 install_kiauh()
 copy_config_files()
+reboot()
