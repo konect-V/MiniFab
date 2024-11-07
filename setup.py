@@ -3,6 +3,8 @@ import subprocess
 is_kiauh = 0
 
 def install_kiauh():
+    global is_kiauh
+    
     if is_kiauh == 1:
         return
     
