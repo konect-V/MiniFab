@@ -47,4 +47,15 @@ def install_kiauh():
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
 
+def copy_config_files():
+    source_dir = os.path.join(os.path.dirname(__file__), "config", "*")
+    dest_dir = os.path.expanduser("~/printer_data/config")
+
+    try:
+        subprocess.run(f"cp -r {source_dir} {dest_dir}", shell=True, check=True)
+        print(f"Les fichiers ont été copiés de {source_dir} vers {dest_dir}.")
+    except subprocess.CalledProcessError as e:
+        print(f"Une erreur est survenue lors de la copie des fichiers : {e}")
+
 install_kiauh()
+copy_config_files()
