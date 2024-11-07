@@ -3,6 +3,9 @@ import subprocess
 is_kiauh = 0
 
 def install_kiauh():
+    if is_kiauh == 1:
+        return
+    
     is_kiauh = 1
     try:
         # Step 1: Update system and install git if not already installed
@@ -19,5 +22,4 @@ def install_kiauh():
         print(f"An error occurred: {e}")
 
 
-def main():
-    install_kiauh()
+install_kiauh()
