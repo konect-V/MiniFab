@@ -5,7 +5,7 @@ is_kiauh = 0
 
 def ask_confirmation():
     while True:
-        response = input("As-tu bien lu les instructions pour installer KlipperScreen et gcode_shell_command ? (oui/non) : ").strip().lower()
+        response = input("As-tu bien lu les instructions pour installer gcode_shell_command ? (oui/non) : ").strip().lower()
         if response == "oui":
             return True
         elif response == "non":
@@ -38,8 +38,8 @@ def install_kiauh():
 
         os.chdir(kiauh_path)
 
-        # Installer KlipperScreen et gcode_shell_command à partir de KIAUH
-        print("Suivez les instructions dans KIAUH pour installer KlipperScreen (Install->KlipperScreen->Y->X->n) puis installer gcode_shell_command(B->Advanced->G Code Shell Command->Y->n->B->Q) à partir de KIAUH...")
+        # Installer gcode_shell_command à partir de KIAUH
+        print("Suivez les instructions dans KIAUH pour installer gcode_shell_command(B->Advanced->G Code Shell Command->Y->n->B->Q) à partir de KIAUH...")
         ask_confirmation()
         subprocess.run(["./kiauh.sh"], check=True)  # Lancement du script KIAUH pour accéder aux options d'installation
 
