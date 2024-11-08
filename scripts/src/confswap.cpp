@@ -14,7 +14,7 @@ using namespace std;
 
 #define INCLUDE_LINE_INDEX 0
 
-string config_file_path = "/home/biqu/printer_data/config/printer.cfg";
+string config_file_path = "/home/minifab/printer_data/config/printer.cfg";
 
 int main(int argc, char *argv[])
 {
