@@ -16,7 +16,7 @@ def main(config_name):
 
     # Vérifie si le dossier existe
     if not os.path.isdir(config_path):
-        print(f"Le dossier '{config_name}' n'existe pas dans {base_path}")
+        print(f"Le dossier '{config_path}' n'existe pas dans {base_path}")
         return
 
     # Crée les liens symboliques
