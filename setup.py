@@ -60,7 +60,7 @@ def copy_config_files():
 def reboot():
     os.system('systemctl reboot -i')
 
-def update():
+def update_config():
     repo_dir = os.path.dirname(os.path.abspath(__file__))
 
     try:
