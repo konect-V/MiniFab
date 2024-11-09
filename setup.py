@@ -45,7 +45,7 @@ def install_kiauh():
 
         is_kiauh = 1
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred: {e}")
+        print(f"Une erreur est survenue : {e}")
 
 def copy_config_files():
     source_dir = os.path.join(os.path.dirname(__file__), "config", "*")
@@ -60,6 +60,43 @@ def copy_config_files():
 def reboot():
     os.system('systemctl reboot -i')
 
-install_kiauh()
-copy_config_files()
-reboot()
+def update():
+    repo_dir = os.path.dirname(os.path.abspath(__file__))
+
+    try:
+        print("Mise à jour du dépôt...")
+        subprocess.run(["git", "-C", repo_dir, "pull"], check=True)
+        print("Mise à jour du dépôt terminée.")
+        print("Mise à jour de la config...")
+        copy_config_files()
+        print("Mise à jour du config terminée.")
+    except subprocess.CalledProcessError as e:
+        print(f"Une erreur est survenue lors de la mise à jour du dépôt : {e}")
+
+
+setup_status_file = "setup_status.txt"
+
+def setup_config():
+    # Code pour la configuration initiale
+    print("Exécution du setup de la config...")
+    install_kiauh()
+    copy_config_files()
+    # Simule la configuration
+    with open(setup_status_file, "w") as f:
+        f.write("setup_done")
+    print("Setup terminé.")
+    reboot()
+
+def menu():
+    # Vérifie si le setup a déjà été effectué en lisant le fichier de statut
+    if os.path.exists(setup_status_file):
+        with open(setup_status_file, "r") as f:
+            status = f.read().strip()
+        if status == "setup_done":
+            print("Le setup a déjà été effectué. Passage à la mise à jour de la config.")
+            update_config()
+            return
+        else:
+            setup_config()
+
+menu()
