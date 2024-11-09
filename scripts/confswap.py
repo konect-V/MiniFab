@@ -20,8 +20,8 @@ def main(config_name):
         return
 
     # Crée les liens symboliques
-    create_symlink(os.path.join(config_path, "printer.cfg"), "printer.cfg")
-    create_symlink(os.path.join(config_path, "KlipperScreen.conf"), "KlipperScreen.conf")
+    create_symlink(os.path.join(config_path, "printer.cfg"), os.path.join(base_path, "printer.cfg"))
+    create_symlink(os.path.join(config_path, "KlipperScreen.conf"), os.path.join(base_path, "KlipperScreen.conf"))
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
