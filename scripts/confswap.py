@@ -11,7 +11,7 @@ def create_symlink(src_file, dest_file):
         print(f"Erreur {src_file}: {e}")
 
 def main(config_name):
-    base_path = "~/printer_data/config"
+    base_path = "~/printer_data/config/"
     config_path = os.path.join(base_path, config_name)
 
     # Vérifie si le dossier existe
