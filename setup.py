@@ -70,6 +70,7 @@ def update_config():
         print("Mise à jour de la config...")
         copy_config_files()
         print("Mise à jour du config terminée.")
+        os.system('echo RESTART > /tmp/printer')
     except subprocess.CalledProcessError as e:
         print(f"Une erreur est survenue lors de la mise à jour du dépôt : {e}")
 
