@@ -36,10 +36,13 @@ def install_kiauh():
         
         print("KIAUH installation completed.")
 
+        print_area_bed_mesh_path = os.path.expanduser("~/print_area_bed_mesh")
+        subprocess.run(["git", "clone", "https://github.com/Turge08/print_area_bed_mesh.git", print_area_bed_mesh_path], check=True)
+
         os.chdir(kiauh_path)
 
         # Installer gcode_shell_command à partir de KIAUH
-        print("Suivez les instructions dans KIAUH pour installer gcode_shell_command(B->Advanced->G Code Shell Command->Y->n->B->Q) à partir de KIAUH...")
+        print("Suivez les instructions dans KIAUH pour installer KlipperScreen, OctoEverywhere et gcode_shell_command(B->Advanced->G Code Shell Command->Y->n->B->Q) à partir de KIAUH...")
         ask_confirmation()
         subprocess.run(["./kiauh.sh"], check=True)  # Lancement du script KIAUH pour accéder aux options d'installation
 
