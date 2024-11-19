@@ -61,8 +61,8 @@ def main():
     # set at iddle state first
     script_dir = os.path.dirname(os.path.abspath(__file__))
     confswap_executable_path = os.path.join(script_dir, "./confswap.py")
-    os.system("python confswap.py iddle")
-    os.system('sudo systemctl restart klipper')
+    os.system(f"python {confswap_executable_path} iddle")
+    os.system("sudo systemctl restart klipper")
 
     while True:
         uuids = get_canbus_uuid()
