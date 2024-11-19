@@ -5,7 +5,7 @@ import time
 
 def get_canbus_uuid():
     # Commande à exécuter
-    command = "~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0"
+    command = "/home/minifab/klippy-env/bin/python /home/minifab/klipper/scripts/canbus_query.py can0"
     
     try:
         # Exécution de la commande
