@@ -90,7 +90,7 @@ def main():
                     if result.returncode != 0:
                         print(f"Erreur lors de l'exécution de la commande de changement de firmware : {result.stderr}")
                         return None
-        time.sleep(30)
+        time.sleep(10)
 
 if __name__ == "__main__":
     main()
