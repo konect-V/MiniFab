@@ -1,5 +1,6 @@
 import subprocess
 import re
+import os
 import time
 
 def get_canbus_uuid():
