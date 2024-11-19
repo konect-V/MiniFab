@@ -57,13 +57,14 @@ def find_folder_by_uuid(uuid, uuid_mapping):
 
 def main():
     uuid_mapping = extract_canbus_uuids()
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     while True:
         uuids = get_canbus_uuid()
         
         if uuids:
             for uuid in uuids:
-                print(f"UUID trouvé : {find_folder_by_uuid(uuid, uuid_mapping)}")
-        
+                confswap_executable_path = os.path.join(script_dir, "./confswap.py")
+                os.system(f"python {confswap_executable_path} {find_folder_by_uuid(uuid, uuid_mapping)}")        
         # Attends
         time.sleep(30)
 

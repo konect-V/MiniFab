@@ -22,10 +22,11 @@ def main(config_name):
     # Crée les liens symboliques
     create_symlink(os.path.join(config_path, "printer.cfg"), os.path.join(base_path, "printer.cfg"))
     create_symlink(os.path.join(config_path, "KlipperScreen.conf"), os.path.join(base_path, "KlipperScreen.conf"))
+    print(f"Nouveau firmware pour : {config_name}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python script.py <config_folder_name>")
+        print("Utilisation: python script.py <config_folder_name>")
         sys.exit(1)
     
     config_folder = sys.argv[1]
