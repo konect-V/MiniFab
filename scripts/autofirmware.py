@@ -39,8 +39,8 @@ def main():
         else:
             print("Aucun UUID trouvé ou erreur lors de l'exécution.")
         
-        # Attente de 30 secondes avant la prochaine exécution
-        time.sleep(30)
+        # Attends
+        time.sleep(5)
 
 if __name__ == "__main__":
     main()
