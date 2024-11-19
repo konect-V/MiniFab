@@ -22,13 +22,46 @@ def get_canbus_uuid():
         print(f"Erreur : {e}")
         return None
 
-def main():    
+
+def extract_canbus_uuids():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    config_dir = os.path.join(script_dir, "../config")
+    uuid_mapping = {}
+
+    for folder in os.listdir(config_dir):
+        folder_path = os.path.join(config_dir, folder)
+        printer_cfg_path = os.path.join(folder_path, "printer.cfg")
+
+        # Vérifie que c'est un dossier et qu'il contient un fichier printer.cfg
+        if os.path.isdir(folder_path) and os.path.isfile(printer_cfg_path):
+            try:
+                with open(printer_cfg_path, 'r') as file:
+                    content = file.read()
+                
+                # Extraction de tous les canbus_uuid dans le fichier
+                uuids = re.findall(r"canbus_uuid:\s*([a-fA-F0-9]+)", content)
+                
+                if uuids:
+                    uuid_mapping[folder] = uuids
+            except Exception as e:
+                print(f"Erreur en lisant {printer_cfg_path}: {e}")
+    
+    return uuid_mapping
+
+def find_folder_by_uuid(uuid, uuid_mapping):
+    for folder, uuids in uuid_mapping.items():
+        if uuid in uuids:
+            return folder
+    return None
+
+def main():
+    uuid_mapping = extract_canbus_uuids()
     while True:
         uuids = get_canbus_uuid()
         
         if uuids:
             for uuid in uuids:
-                print(f"UUID trouvé : {uuid}")
+                print(f"UUID trouvé : {find_folder_by_uuid(uuid, uuid_mapping)}")
         
         # Attends
         time.sleep(30)
