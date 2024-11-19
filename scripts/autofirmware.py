@@ -78,7 +78,7 @@ def main():
 
                 if t != 0:
                     print(f"Changement de firmware pour : {machine}")
-                    os.system(f"curl -d \"script=M453 T{t}\" http://127.0.0.1/printer/gcode/script")
+                    os.system(f"curl -d \"script=M453 T{t}\" http://127.0.0.1/printer/gcode/script > /dev/null")
         time.sleep(30)
 
 if __name__ == "__main__":
