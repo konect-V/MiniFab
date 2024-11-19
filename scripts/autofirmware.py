@@ -5,7 +5,7 @@ import time
 
 def get_canbus_uuid():
     # Commande à exécuter
-    command = "~/klippy-env/bin/python ~/klipper/scripts/canbus_query.py can0"
+    command = "python ~/klipper/scripts/canbus_query.py can0"
     
     try:
         # Exécution de la commande
@@ -78,7 +78,13 @@ def main():
 
                 if t != 0:
                     print(f"Changement de firmware pour : {machine}")
-                    os.system(f"curl -d \"script=M453 T{t}\" http://127.0.0.1/printer/gcode/script > /dev/null")
+
+                    command = f"curl -d \"script=M453 T{t}\" http://127.0.0.1/printer/gcode/script"
+                    result = subprocess.run(command, shell=True, text=True, capture_output=True)
+
+                    if result.returncode != 0:
+                        print(f"Erreur lors de l'exécution de la commande de changement de firmware : {result.stderr}")
+                        return None
         time.sleep(30)
 
 if __name__ == "__main__":
