@@ -16,8 +16,8 @@ def get_canbus_uuid():
             return None
         
         # Extraction des UUIDs avec une regex
-        print(result.stdout)
         uuids = re.findall(r"canbus_uuid=([a-fA-F0-9]+)", result.stdout)
+        print(uuids)
         return uuids
     except Exception as e:
         print(f"Erreur : {e}")
