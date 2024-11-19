@@ -57,13 +57,18 @@ def find_folder_by_uuid(uuid, uuid_mapping):
 
 def main():
     uuid_mapping = extract_canbus_uuids()
+
+    # set at iddle state first
     script_dir = os.path.dirname(os.path.abspath(__file__))
+    confswap_executable_path = os.path.join(script_dir, "./confswap.py")
+    os.system("python confswap.py iddle")
+    os.system('sudo systemctl restart klipper')
+
     while True:
         uuids = get_canbus_uuid()
         
         if uuids:
             for uuid in uuids:
-                confswap_executable_path = os.path.join(script_dir, "./confswap.py")
                 machine = find_folder_by_uuid(uuid, uuid_mapping)
                 t = 0
 
