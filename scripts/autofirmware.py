@@ -66,6 +66,7 @@ def main():
                 confswap_executable_path = os.path.join(script_dir, "./confswap.py")
                 machine = find_folder_by_uuid(uuid, uuid_mapping)
                 t = 0
+
                 if machine == "mill":
                     t = 1
                 elif machine == "print":
@@ -74,8 +75,9 @@ def main():
                     t = 3
                 else:
                     print(f"Unknown: {machine}")
-                    
+
                 if t != 0:
+                    print(f"Changement de firmware pour : {machine}")
                     os.system(f"curl -d \"script=M453 T{t}\" http://127.0.0.1/printer/gcode/script")
         time.sleep(30)
 
