@@ -66,15 +66,15 @@ def main():
                 confswap_executable_path = os.path.join(script_dir, "./confswap.py")
                 machine = find_folder_by_uuid(uuid, uuid_mapping)
                 t = 0
-                match machine:
-                    case "mill":
-                        t = 1
-                    case "print":
-                        t = 2
-                    case "penplt":
-                        t = 3
-                    case _:
-                        print(f"Unknow : {machine}")
+                if machine == "mill":
+                    t = 1
+                elif machine == "print":
+                    t = 2
+                elif machine == "penplt":
+                    t = 3
+                else:
+                    print(f"Unknown: {machine}")
+                    
                 if t != 0:
                     os.system(f"curl -d \"script=M453 T{t}\" http://127.0.0.1/printer/gcode/script")
         time.sleep(30)
