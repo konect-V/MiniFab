@@ -73,6 +73,8 @@ def main():
                         t = 2
                     case "penplt":
                         t = 3
+                    case _:
+                        print(f"Unknow : {machine}")
                 if t != 0:
                     os.system(f"curl -d \"script=M453 T{t}\" http://127.0.0.1/printer/gcode/script")
         time.sleep(30)
