@@ -56,7 +56,7 @@ def find_folder_by_uuid(uuid, uuid_mapping):
     return None
 
 def firmware_restart():
-    command = "curl -d http://minifab.local/printer/firmware_restart"
+    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.firmware_restart\",\"id\": 8463}' minifab.local/printer/firmware_restart"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
     if result.returncode != 0:
