@@ -70,7 +70,9 @@ def firmware_swap(name):
 
 def firmware_change(name):
     firmware_swap(name)
-    time.sleep(5)
+    time.sleep(1)
+    firmware_restart()
+    time.sleep(1)
     firmware_restart()
 
 def main():
