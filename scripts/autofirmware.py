@@ -64,34 +64,21 @@ def main():
         if uuids:
             for uuid in uuids:
                 machine = find_folder_by_uuid(uuid, uuid_mapping)
-                t = 0
 
-                if machine == "mill":
-                    t = 1
-                elif machine == "print":
-                    t = 2
-                elif machine == "penplt":
-                    t = 3
-                else:
-                    print(f"Unknown: {machine}")
+                print(f"Changement de firmware pour : {machine}")
 
-                if t != 0:
-                    print(f"Changement de firmware pour : {machine}")
+                # set at iddle state first to avoid klipper error
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                confswap_executable_path = os.path.join(script_dir, "./confswap.py")
+                os.system(f"python {confswap_executable_path} {machine}")
 
-                    # set at iddle state first to avoid klipper error
-                    script_dir = os.path.dirname(os.path.abspath(__file__))
-                    confswap_executable_path = os.path.join(script_dir, "./confswap.py")
-                    os.system(f"python {confswap_executable_path} iddle")
-                    os.system("sudo systemctl restart klipper")
+                command = "curl -d http:// minifab.local/printer/firmware_restart"
+                result = subprocess.run(command, shell=True, text=True, capture_output=True)
+
+                if result.returncode != 0:
+                    print(f"Erreur lors de l'exécution de la commande de changement de firmware : {result.stderr}")
+                    return None
                     
-                    time.sleep(5)
-
-                    command = f"curl -d \"script=M453 T{t}\" http://127.0.0.1/printer/gcode/script"
-                    result = subprocess.run(command, shell=True, text=True, capture_output=True)
-
-                    if result.returncode != 0:
-                        print(f"Erreur lors de l'exécution de la commande de changement de firmware : {result.stderr}")
-                        return None
         time.sleep(5)
 
 if __name__ == "__main__":
