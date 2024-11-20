@@ -55,12 +55,20 @@ def find_folder_by_uuid(uuid, uuid_mapping):
             return folder
     return None
 
+def restart():
+    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.restart\",\"id\": 8463}' minifab.local/printer/restart"
+    result = subprocess.run(command, shell=True, text=True, capture_output=True)
+
+    if result.returncode != 0:
+        print(f"Erreur lors de l'exécution de la commande de restart : {result.stderr}")
+        return None
+
 def firmware_restart():
     command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.firmware_restart\",\"id\": 8463}' minifab.local/printer/firmware_restart"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
     if result.returncode != 0:
-        print(f"Erreur lors de l'exécution de la commande de changement de firmware : {result.stderr}")
+        print(f"Erreur lors de l'exécution de la commande de firmware_restart : {result.stderr}")
         return None
 
 def firmware_swap(name):
@@ -70,9 +78,9 @@ def firmware_swap(name):
 
 def firmware_change(name):
     firmware_swap(name)
-    time.sleep(1)
-    firmware_restart()
-    time.sleep(1)
+    restart()
+    # wait restart
+    time.sleep(5)
     firmware_restart()
 
 def main():
