@@ -55,7 +55,27 @@ def find_folder_by_uuid(uuid, uuid_mapping):
             return folder
     return None
 
+def firmware_restart():
+    command = "curl -d http:// minifab.local/printer/firmware_restart"
+    result = subprocess.run(command, shell=True, text=True, capture_output=True)
+
+    if result.returncode != 0:
+        print(f"Erreur lors de l'exécution de la commande de changement de firmware : {result.stderr}")
+        return None
+
+def firmware_swap(name):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    confswap_executable_path = os.path.join(script_dir, "./confswap.py")
+    os.system(f"python {confswap_executable_path} {name}")
+
+def firmware_change(name):
+    firmware_swap(name)
+    firmware_restart()
+
 def main():
+    # set at iddle state first to avoid klipper error at startup
+    firmware_change("iddle")
+
     uuid_mapping = extract_canbus_uuids()
 
     while True:
@@ -67,18 +87,9 @@ def main():
 
                 print(f"Changement de firmware pour : {machine}")
 
-                # set at iddle state first to avoid klipper error
-                script_dir = os.path.dirname(os.path.abspath(__file__))
-                confswap_executable_path = os.path.join(script_dir, "./confswap.py")
-                os.system(f"python {confswap_executable_path} {machine}")
+                firmware_change(machine)
 
-                command = "curl -d http:// minifab.local/printer/firmware_restart"
-                result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
-                if result.returncode != 0:
-                    print(f"Erreur lors de l'exécution de la commande de changement de firmware : {result.stderr}")
-                    return None
-                    
         time.sleep(5)
 
 if __name__ == "__main__":
