@@ -56,7 +56,7 @@ def find_folder_by_uuid(uuid, uuid_mapping):
     return None
 
 def firmware_restart():
-    command = "curl -d http:// minifab.local/printer/firmware_restart"
+    command = "curl -d http://minifab.local/printer/firmware_restart"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
     if result.returncode != 0:
@@ -70,6 +70,7 @@ def firmware_swap(name):
 
 def firmware_change(name):
     firmware_swap(name)
+    time.sleep(5)
     firmware_restart()
 
 def main():
