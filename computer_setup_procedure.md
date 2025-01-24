@@ -14,7 +14,9 @@ Note: It is important that the user is named "minifab" if you want to follow the
 
 Then validate the settings, click Continue, and wait.
 
-Once finished, install an application like MobaXterm to connect via SSH. Use the parameters that were already set during the OS flashing onto the SD card.
+Once finished, insert the SD card into the Raspberry Pi.
+
+Install an application like MobaXterm to connect via SSH. Use the parameters that were already set during the OS flashing onto the SD card.
 
 Next, execute:  
 `git clone https://github.com/DeVinci-FabLab/MiniFab`  
