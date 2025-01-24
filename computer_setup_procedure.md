@@ -17,7 +17,7 @@ Then validate the settings, click Continue, and wait.
 Once finished, install an application like MobaXterm to connect via SSH. Use the parameters that were already set during the OS flashing onto the SD card.
 
 Next, execute:  
-`git clone <https://github.com/DeVinci-FabLab/MiniFab>`  
+`git clone https://github.com/DeVinci-FabLab/MiniFab`  
 
 Then run:  
 `cd Minifab && python setup.py`  
@@ -26,7 +26,7 @@ Install OctoPrint (this should be included in the `setup.py` script).
 
 Install OctoEverywhere and activate the shared connection: <https://octoeverywhere.com/> (this should also be included in the `setup.py` script).  
 
-Then refer to **Octopus Can Bridge Setup.doc** for further instructions.  
+Then refer to **octopus_can_bridge_setup.md** for further instructions.  
 
 Finally, enable the automatic firmware update system by running the command:  
 `sudo crontab -e`  
