@@ -6,6 +6,14 @@ from confswap import confswap
 
 error_str = ""
 current_toolhead = ""
+firmware_available = []
+forced = False
+
+def get_forced():
+    return forced
+
+def get_current_firmware_available():
+    return firmware_available
 
 def get_current_toolhead():
     return current_toolhead
@@ -36,7 +44,7 @@ def get_canbus_uuid():
 
 
 def extract_canbus_uuids():
-    global error_str
+    global error_str, firmware_available
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     config_dir = os.path.join(script_dir, "../config")
@@ -57,6 +65,7 @@ def extract_canbus_uuids():
                 
                 if uuids:
                     uuid_mapping[folder] = uuids
+                    firmware_available.append(folder)
             except Exception as e:
                 error_str = f"{extract_canbus_uuids.__name__} : {e}"
     
@@ -109,7 +118,7 @@ def autofirmware_daemon():
 
     uuid_mapping = extract_canbus_uuids()
 
-    while True:
+    while not forced:
         uuids = get_canbus_uuid()
         
         if uuids:
@@ -118,3 +127,8 @@ def autofirmware_daemon():
                 firmware_change(current_toolhead)
 
         time.sleep(5)
+
+def force_autofirmware(firmware):
+    global forced
+    forced = True
+    firmware_change(firmware)

@@ -103,6 +103,11 @@
             <span id="toolhead-text">Current toolhead : </span>
         </div>
         <button class="button" onclick="changeToolhead()">Change Toolhead</button>
+        <div>
+            {% for firmware in firmware_available %}
+                <button class="button" onclick="forcefirmware('{{ firmware }}')">Force : {{ firmware }}</button>
+            {% endfor %}
+        </div>
         
         <div class="faq">
             <h2>FAQ</h2>
@@ -130,6 +135,21 @@
                 })
                 .catch(error => console.error('Error:', error));
         }
+        function forcefirmware(firmware) {
+            fetch('/forcefirmware', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ firmware: firmware }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
         function updateStatus() {
             fetch('/error')
                 .then(response => response.json())
@@ -149,7 +169,7 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('toolhead-img').src = `{{url_for('static', filename='')}}${data.toolhead}.svg`;
-                    document.getElementById('toolhead-text').textContent = `Current toolhead : ${data.toolhead}`;
+                    document.getElementById('toolhead-text').textContent = `Current toolhead : ${data.toolhead}, Forced : ${data.forced}`;
                 });
         }
         setInterval(() => {
