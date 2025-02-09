@@ -10,7 +10,7 @@ def create_symlink(src_file, dest_file):
     except Exception as e:
         print(f"Erreur {src_file}: {e}")
 
-def main(config_name):
+def confswap(config_name):
     base_path = "/home/minifab/printer_data/config/"
     config_path = os.path.join(base_path, config_name)
 
@@ -29,4 +29,4 @@ if __name__ == "__main__":
         sys.exit(1)
     
     config_folder = sys.argv[1]
-    main(config_folder)
+    confswap(config_folder)

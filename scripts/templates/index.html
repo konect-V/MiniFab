@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minifab Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .status {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            border: 1px solid #d32f2f;
+        }
+        .success {
+            color: #388e3c;
+            background: #e8f5e9;
+            border: 1px solid #388e3c;
+        }
+        .toolhead {
+            font-size: 1.2em;
+            margin-top: 15px;
+            padding: 10px;
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toolhead img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <img src="{{url_for('static', filename='logo.png')}}" alt="Minifab Logo" class="logo">
+    <div class="container">
+        <h1>Minifab Dashboard</h1>
+        {% if error != "" %}
+            <div id="status" class="status error"><img src="{{url_for('static', filename='error.svg')}}" alt="Error Logo"><b>Error : </b>{{ error }}</div>
+        {% else %}
+            <div id="status" class="status success"><img src="{{url_for('static', filename='success.svg')}}" alt="Success Logo">Everything is running smoothly</div>
+        {% endif %}
+        <div class="toolhead">
+            <img src="{{url_for('static', filename=toolhead + '.svg')}}" alt="{{ toolhead }} Logo">
+            <span>Current toolhead : {{ toolhead }}</span>
+        </div>
+    </div>
+</body>
+</html>

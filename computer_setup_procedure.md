@@ -33,7 +33,7 @@ Then refer to **octopus_can_bridge_setup.md** for further instructions.
 Finally, enable the automatic firmware update system by running the command:  
 `sudo crontab -e`  
 and adding the following line:  
-`@reboot /usr/bin/python /home/minifab/MiniFab/scripts/autofirmware.py`
+`@reboot /usr/bin/python /home/minifab/MiniFab/scripts/startup.py`
 
 To finish the configuration, run:  
 `sudo reboot`
