@@ -102,5 +102,7 @@ def menu():
             return
         else:
             setup_config()
+    else:
+        setup_config()
 
 menu()
