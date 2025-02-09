@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
+            background-color: #eef2f7;
             color: #333;
             text-align: center;
             padding: 20px;
@@ -22,13 +22,17 @@
             background: #ffffff;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
         }
         .status {
             font-size: 1.5em;
             margin: 20px 0;
             padding: 15px;
             border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         .error {
             color: #d32f2f;
@@ -50,15 +54,42 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .toolhead img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
+            gap: 10px;
         }
         .logo {
             width: 100px;
             margin-bottom: 20px;
+        }
+        .faq {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .faq-item {
+            background: #f8f9fa;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .faq-item h3 {
+            margin: 0;
+            font-size: 1.1em;
+        }
+        .faq-content {
+            display: none;
+            padding-top: 10px;
+            font-size: 0.95em;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -66,15 +97,67 @@
     <img src="{{url_for('static', filename='logo.png')}}" alt="Minifab Logo" class="logo">
     <div class="container">
         <h1>Minifab Dashboard</h1>
-        {% if error != "" %}
-            <div id="status" class="status error"><img src="{{url_for('static', filename='error.svg')}}" alt="Error Logo"><b>Error : </b>{{ error }}</div>
-        {% else %}
-            <div id="status" class="status success"><img src="{{url_for('static', filename='success.svg')}}" alt="Success Logo">Everything is running smoothly</div>
-        {% endif %}
+        <div id="status" class="status success"></div>
         <div class="toolhead">
-            <img src="{{url_for('static', filename=toolhead + '.svg')}}" alt="{{ toolhead }} Logo">
-            <span>Current toolhead : {{ toolhead }}</span>
+            <img id="toolhead-img" src="" alt="Toolhead Logo">
+            <span id="toolhead-text">Current toolhead : </span>
+        </div>
+        <button class="button" onclick="changeToolhead()">Change Toolhead</button>
+        
+        <div class="faq">
+            <h2>FAQ</h2>
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <h3>What should I do if the toolhead is installed but not detected correctly?</h3>
+                <div class="faq-content">If an error appears, please refer to the maintenance guide.<br>If the displayed toolhead is incorrect, try refreshing the page. If after one minute the information has not updated, restart the machine.<br>If <b>Idle</b> remains displayed, restart the machine.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <h3>What should I do if an error is displayed?</h3>
+                <div class="faq-content">Please refer to the maintenance guide for more information.</div>
+            </div>
         </div>
     </div>
+    
+    <script>
+        function toggleFAQ(element) {
+            const content = element.querySelector('.faq-content');
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        }
+        function changeToolhead() {
+            fetch('/change_toolhead', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        function updateStatus() {
+            fetch('/error')
+                .then(response => response.json())
+                .then(data => {
+                    const statusDiv = document.getElementById('status');
+                    if (data.error) {
+                        statusDiv.className = 'status error';
+                        statusDiv.innerHTML = `<img src="{{url_for('static', filename='error.svg')}}" alt="Error Logo"> <b>Error :</b> ${data.error}`;
+                    } else {
+                        statusDiv.className = 'status success';
+                        statusDiv.innerHTML = `<img src="{{url_for('static', filename='success.svg')}}" alt="Success Logo"> Everything is running smoothly`;
+                    }
+                });
+        }
+        function updateToolhead() {
+            fetch('/toolhead')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('toolhead-img').src = `{{url_for('static', filename='')}}${data.toolhead}.svg`;
+                    document.getElementById('toolhead-text').textContent = `Current toolhead : ${data.toolhead}`;
+                });
+        }
+        setInterval(() => {
+            updateStatus();
+            updateToolhead();
+        }, 5000);
+        updateStatus();
+        updateToolhead();
+    </script>
 </body>
 </html>
