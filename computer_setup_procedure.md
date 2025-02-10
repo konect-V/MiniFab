@@ -22,7 +22,7 @@ Next, execute:
 `git clone https://github.com/DeVinci-FabLab/MiniFab`  
 
 Then run:  
-`cd Minifab && python setup.py`  
+`cd Minifab/scripts && python setup.py`  
 
 Install OctoPrint (this should be included in the `setup.py` script).  
 

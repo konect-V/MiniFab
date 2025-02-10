@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minifab Dashboard</title>
+    <link rel="icon" href="{{url_for('static', filename='logo.png')}}"/>
+    <title>Minifab Dashboard - Home</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -115,7 +116,7 @@
             <img id="toolhead-img" src="" alt="Toolhead Logo">
             <span id="toolhead-text">Current toolhead : </span>
         </div>
-        <button class="button" onclick="changeToolhead()">Change Toolhead</button>
+        <button class="button" onclick="updatemachine()">Update Machine</button>
         <div>
             <button class="button" onclick="forcefirmware('auto')">Auto</button>
             {% for firmware in firmware_available %}
@@ -143,12 +144,9 @@
             const content = element.querySelector('.faq-content');
             content.style.display = content.style.display === 'block' ? 'none' : 'block';
         }
-        function changeToolhead() {
-            fetch('/change_toolhead', { method: 'POST' })
+        function updatemachine() {
+            fetch('/updatemachine')
                 .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
                 .catch(error => console.error('Error:', error));
         }
         function forcefirmware(firmware) {
@@ -159,11 +157,11 @@
                 },
                 body: JSON.stringify({ firmware: firmware }),
             })
-            .then(response => response.json())
-            .then(data => {
-                updateToolhead();
-            })
-            .catch(error => console.error('Error:', error));
+                .then(response => response.json())
+                .then(data => {
+                    updateToolhead();
+                })
+                .catch(error => console.error('Error:', error));
 
         }
 

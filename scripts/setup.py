@@ -2,6 +2,7 @@ import subprocess
 import os
 
 is_kiauh = 0
+repo_dir = "/home/minifab/MiniFab"
 
 def ask_confirmation():
     while True:
@@ -22,6 +23,7 @@ def install_kiauh():
     try:
         # Step 1: Update system and install git if not already installed
         print("Updating system and installing git...")
+        subprocess.run(["sudo", "pip", "install", "flask"], check=True)
         subprocess.run(["sudo", "apt-get", "update"], check=True)
         subprocess.run(["sudo", "apt-get", "install", "git", "-y"], check=True)
         
@@ -51,7 +53,7 @@ def install_kiauh():
         print(f"Une erreur est survenue : {e}")
 
 def copy_config_files():
-    source_dir = os.path.join(os.path.dirname(__file__), "config", "*")
+    source_dir = os.path.join(repo_dir, "config", "*")
     dest_dir = os.path.expanduser("~/printer_data/config")
 
     try:
@@ -64,8 +66,6 @@ def reboot():
     os.system('systemctl reboot -i')
 
 def update_config():
-    repo_dir = os.path.dirname(os.path.abspath(__file__))
-
     try:
         print("Mise à jour du dépôt...")
         subprocess.run(["git", "-C", repo_dir, "pull"], check=True)
@@ -105,4 +105,5 @@ def menu():
     else:
         setup_config()
 
-menu()
+if __name__ == '__main__':
+    menu()
