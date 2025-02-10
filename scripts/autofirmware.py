@@ -130,9 +130,10 @@ def autofirmware_daemon():
             time.sleep(5)
 
 def force_autofirmware(firmware):
-    global forced
+    global forced, current_toolhead
     if firmware == "auto":
         forced = False
     else: 
         forced = True
+        current_toolhead = firmware
         firmware_change(firmware)

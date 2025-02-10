@@ -146,11 +146,10 @@
             })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
+                updateToolhead();
             })
             .catch(error => console.error('Error:', error));
 
-            updateToolhead();
         }
 
         function updateStatus() {
