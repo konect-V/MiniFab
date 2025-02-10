@@ -2,7 +2,8 @@ import subprocess
 import os
 
 is_kiauh = 0
-repo_dir = "/home/minifab/MiniFab"
+user_dir = "/home/minifab"
+repo_dir = os.path.join(user_dir, "MiniFab")
 
 def ask_confirmation():
     while True:
@@ -54,7 +55,7 @@ def install_kiauh():
 
 def copy_config_files():
     source_dir = os.path.join(repo_dir, "config", "*")
-    dest_dir = os.path.expanduser("~/printer_data/config")
+    dest_dir = os.path.join(user_dir, "printer_data/config")
 
     try:
         subprocess.run(f"cp -r {source_dir} {dest_dir}", shell=True, check=True)
