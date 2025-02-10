@@ -104,6 +104,7 @@
         </div>
         <button class="button" onclick="changeToolhead()">Change Toolhead</button>
         <div>
+            <button class="button" onclick="forcefirmware('auto')">Auto</button>
             {% for firmware in firmware_available %}
                 <button class="button" onclick="forcefirmware('{{ firmware }}')">Force : {{ firmware }}</button>
             {% endfor %}
@@ -148,6 +149,8 @@
                 alert(data.message);
             })
             .catch(error => console.error('Error:', error));
+
+            updateToolhead();
         }
 
         function updateStatus() {

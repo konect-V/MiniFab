@@ -118,17 +118,21 @@ def autofirmware_daemon():
 
     uuid_mapping = extract_canbus_uuids()
 
-    while not forced:
-        uuids = get_canbus_uuid()
-        
-        if uuids:
-            for uuid in uuids:
-                current_toolhead = find_folder_by_uuid(uuid, uuid_mapping)
-                firmware_change(current_toolhead)
+    while True:
+        if not forced:
+            uuids = get_canbus_uuid()
+            
+            if uuids:
+                for uuid in uuids:
+                    current_toolhead = find_folder_by_uuid(uuid, uuid_mapping)
+                    firmware_change(current_toolhead)
 
-        time.sleep(5)
+            time.sleep(5)
 
 def force_autofirmware(firmware):
     global forced
-    forced = True
-    firmware_change(firmware)
+    if firmware == "auto":
+        forced = False
+    else: 
+        forced = True
+        firmware_change(firmware)
