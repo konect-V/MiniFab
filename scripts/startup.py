@@ -61,5 +61,5 @@ if __name__ == '__main__':
     autofirmware_daemon_thread = Thread(target = autofirmware_daemon)
     autofirmware_daemon_thread.daemon = True
     autofirmware_daemon_thread.start()
-    app.run(port=8000)
+    app.run(host="0.0.0.0", port=8000)
 
