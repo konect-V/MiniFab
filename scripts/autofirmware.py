@@ -111,9 +111,7 @@ def firmware_restart():
         return None
 
 def firmware_swap(name):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    confswap_executable_path = confswap(script_dir)
-    os.system(f"python {confswap_executable_path} {name}")
+    confswap(name)
 
 def firmware_change(name):
     firmware_swap(name)
