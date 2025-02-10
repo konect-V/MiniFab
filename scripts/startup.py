@@ -1,7 +1,7 @@
 import html
 from threading import Thread
-from flask import Flask, jsonify, render_template, request
-from autofirmware import autofirmware_daemon, force_autofirmware, get_error, get_current_toolhead, get_current_firmware_available, get_forced
+from flask import Flask, json, jsonify, render_template, request
+from autofirmware import autofirmware_daemon, force_autofirmware, get_logs, get_last_error, get_current_toolhead, get_current_firmware_available, get_forced
 
 app = Flask(__name__)
 
@@ -9,17 +9,26 @@ app = Flask(__name__)
 def index():
     return render_template('index.html', firmware_available=get_current_firmware_available())
 
-@app.route('/error')
-def error():
-    return "{ \"error\": \"" + html.escape(get_error()).replace("\n", "<br>") + "\"}"
+@app.route('/get_logs')
+def json_logs():
+    return jsonify({"logs": get_logs()})
+
+@app.route('/last_error')
+def last_error():
+    return jsonify(error=get_last_error())
 
 @app.route('/toolhead')
 def toolhead():
-    return "{ \"toolhead\": \"" + html.escape(get_current_toolhead()) + "\", \"forced\": \"" + str(get_forced()) + "\"}"
+    return jsonify(toolhead=get_current_toolhead(), forced=get_forced())
 
 @app.route('/firmware_available')
 def firmware_available():
-    return "{ \"firmware_available\": \"" + html.escape(get_current_firmware_available()) + "\"}"
+    return jsonify(firmware_available=get_current_firmware_available())
+
+@app.route('/logs')
+def logs():
+    return render_template('logs.html')
+
 
 @app.route('/forcefirmware', methods=['POST'])
 def force_firmware():

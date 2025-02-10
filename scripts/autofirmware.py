@@ -1,10 +1,13 @@
-import subprocess
 import re
 import os
 import time
+import inspect
+import subprocess
+from datetime import datetime
 from confswap import confswap
 
-error_str = ""
+logs = []
+last_error_str = ""
 current_toolhead = ""
 firmware_available = []
 forced = False
@@ -18,11 +21,25 @@ def get_current_firmware_available():
 def get_current_toolhead():
     return current_toolhead
 
-def get_error():
-    return error_str
+def get_last_error():
+    return last_error_str
+
+def get_logs():
+    return logs
+
+def log(msg, is_error):
+    global last_error_str, logs
+    curframe = inspect.currentframe()
+    calframe = inspect.getouterframes(curframe, 2)
+    current_time = datetime.now()
+    msg = msg.replace("\n", "")
+    str = f"{current_time} : {calframe[1][3]} : {msg}"    
+    logs.append(str)
+
+    if is_error:
+        last_error_str = str
 
 def get_canbus_uuid():
-    global error_str
     # Commande à exécuter
     command = "/home/minifab/klippy-env/bin/python /home/minifab/klipper/scripts/canbus_query.py can0"
     
@@ -32,19 +49,19 @@ def get_canbus_uuid():
         
         # Vérification des erreurs
         if result.returncode != 0:
-            error_str = f"{get_canbus_uuid.__name__} : {result.stderr}"
+            log(result.stderr, True)
             return None
         
         # Extraction des UUIDs avec une regex
         uuids = re.findall(r"canbus_uuid=([a-fA-F0-9]+)", result.stdout)
         return uuids
     except Exception as e:
-        error_str = f"{get_canbus_uuid.__name__} : {e}"
+        log(e, True)
         return None
 
 
 def extract_canbus_uuids():
-    global error_str, firmware_available
+    global firmware_available
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     config_dir = os.path.join(script_dir, "../config")
@@ -67,7 +84,7 @@ def extract_canbus_uuids():
                     uuid_mapping[folder] = uuids
                     firmware_available.append(folder)
             except Exception as e:
-                error_str = f"{extract_canbus_uuids.__name__} : {e}"
+                log(e, True)
     
     return uuid_mapping
 
@@ -78,23 +95,19 @@ def find_folder_by_uuid(uuid, uuid_mapping):
     return None
 
 def restart():
-    global error_str
-
     command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.restart\",\"id\": 8463}' minifab.local/printer/restart"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
     if result.returncode != 0:
-        error_str = f"{restart.__name__} : {result.stderr}"
+        log(result.stderr, True)
         return None
 
 def firmware_restart():
-    global error_str
-
     command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.firmware_restart\",\"id\": 8463}' minifab.local/printer/firmware_restart"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
     if result.returncode != 0:
-        error_str = f"{firmware_restart.__name__} : {result.stderr}"
+        log(result.stderr, True)
         return None
 
 def firmware_swap(name):
@@ -133,6 +146,8 @@ def force_autofirmware(firmware):
     global forced, current_toolhead
     if firmware == "auto":
         forced = False
+        current_toolhead = "iddle"
+        firmware_change("iddle")
     else: 
         forced = True
         current_toolhead = firmware

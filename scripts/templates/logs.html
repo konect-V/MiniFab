@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/get_logs")
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("log-table-body");
+
+                    data.logs.forEach(logStr => {
+                        // Sépare les différentes parties de l'erreur
+                        const parts = logStr.split(" : ");
+                        const date = parts[0] || "Unknown Date";
+                        const action = parts[1] || "Unknown Action";
+                        const message = parts.slice(2).join(" : ") || "No message available";
+
+                        // Ajoute la ligne au tableau
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td class="border px-4 py-2">${date}</td>
+                            <td class="border px-4 py-2">${action}</td>
+                            <td class="border px-4 py-2">${message}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching logs:", error);
+                    document.getElementById("error-container").innerHTML = "<p class='text-red-500'>Erreur de chargement des logs.</p>";
+                });
+        });
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6 max-w-4xl mx-auto bg-gray-100">
+    <h1 class="text-2xl font-bold mb-4">Logs</h1>
+    
+    <div id="log-container">
+        <table class="min-w-full border border-gray-300 bg-white shadow-lg">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border px-4 py-2">Date</th>
+                    <th class="border px-4 py-2">Action</th>
+                    <th class="border px-4 py-2">Message</th>
+                </tr>
+            </thead>
+            <tbody id="log-table-body"></tbody>
+        </table>
+    </div>
+</body>
+</html>

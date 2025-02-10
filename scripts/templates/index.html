@@ -29,9 +29,6 @@
             margin: 20px 0;
             padding: 15px;
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             gap: 10px;
         }
         .error {
@@ -153,16 +150,17 @@
         }
 
         function updateStatus() {
-            fetch('/error')
+            fetch('/last_error')
                 .then(response => response.json())
                 .then(data => {
                     const statusDiv = document.getElementById('status');
                     if (data.error) {
                         statusDiv.className = 'status error';
-                        statusDiv.innerHTML = `<img src="{{url_for('static', filename='error.svg')}}" alt="Error Logo"> <b>Error :</b> ${data.error}`;
+                        statusDiv.innerHTML = `<img src="{{ url_for('static', filename='error.svg') }}" alt="Error Icon" class="error-icon"><b>Error:</b> ${data.error}<br><a href="/logs" class="error-link">View full logs</a>`;
+
                     } else {
                         statusDiv.className = 'status success';
-                        statusDiv.innerHTML = `<img src="{{url_for('static', filename='success.svg')}}" alt="Success Logo"> Everything is running smoothly`;
+                        statusDiv.innerHTML = `<img src="{{url_for('static', filename='success.svg')}}" alt="Success Logo">Everything is running smoothly`;
                     }
                 });
         }
