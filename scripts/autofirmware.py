@@ -121,6 +121,7 @@ def firmware_change(name):
     # wait restart
     time.sleep(5)
     firmware_restart()
+    log(f"Firmware changed to : {name}", False) 
 
 def autofirmware_daemon():
     global current_toolhead
