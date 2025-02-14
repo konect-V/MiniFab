@@ -116,7 +116,6 @@
             <img id="toolhead-img" src="" alt="Toolhead Logo">
             <span id="toolhead-text">Current toolhead : </span>
         </div>
-        <button class="button" onclick="updatemachine()">Update Machine</button>
         <div>
             <button class="button" onclick="forcefirmware('auto')">Auto</button>
             {% for firmware in firmware_available %}
@@ -143,11 +142,6 @@
         function toggleFAQ(element) {
             const content = element.querySelector('.faq-content');
             content.style.display = content.style.display === 'block' ? 'none' : 'block';
-        }
-        function updatemachine() {
-            fetch('/updatemachine')
-                .then(response => response.json())
-                .catch(error => console.error('Error:', error));
         }
         function forcefirmware(firmware) {
             fetch('/forcefirmware', {

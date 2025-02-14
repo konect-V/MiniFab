@@ -31,17 +31,6 @@ def firmware_available():
 def logs():
     return render_template('logs.html')
 
-@app.route('/updatemachine')
-def updatemachine():
-    tmp = sys.stdout
-
-    result = StringIO()
-    sys.stdout = result
-    update_config()
-
-    sys.stdout = tmp
-    return result.getvalue()
-
 @app.route('/forcefirmware', methods=['POST'])
 def force_firmware():
     try:
