@@ -69,7 +69,7 @@ def reboot():
 def update_config():
     try:
         print("Mise à jour du dépôt...")
-        subprocess.run(["git", "-C", repo_dir, "pull", "master"], check=True)
+        subprocess.run(["git", "-C", repo_dir, "pull"], check=True)
         print("Mise à jour du dépôt terminée.")
         print("Mise à jour de la config...")
         copy_config_files()
