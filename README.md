@@ -97,10 +97,10 @@ En cas de problèmes avec MiniFab, voici quelques solutions :
 
 ### Plateformes supportées
 
-- **Raspberry Pi** : Testé sur Pi 3B+ et Pi 4
+- **Raspberry Pi** : Testé sur Pi 4
 - **Systèmes d'exploitation** : Raspberry Pi OS (Lite), MainsailOS
 - **Firmware** : Klipper (testé avec version 0.11.0 et supérieure)
-- **Interfaces CAN** : Testé avec les cartes EBB et BTT U2C
+- **Interfaces CAN** : Testé avec les cartes EBB et Octopus BTT
 
 ### Fonctionnalités principales
 
