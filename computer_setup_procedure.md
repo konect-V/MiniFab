@@ -22,7 +22,7 @@ Next, execute:
 `git clone https://github.com/DeVinci-FabLab/MiniFab`  
 
 Then run:  
-`cd Minifab/scripts && python setup.py`  
+`cd Minifab/src/scripts && python setup.py`  
 
 Install OctoPrint (this should be included in the `setup.py` script).  
 
@@ -33,7 +33,7 @@ Then refer to **octopus_can_bridge_setup.md** for further instructions.
 Finally, enable the automatic firmware update system by running the command:  
 `sudo crontab -e`  
 and adding the following line:  
-`@reboot /usr/bin/python /home/minifab/MiniFab/scripts/startup.py`
+`@reboot /usr/bin/python /home/minifab/MiniFab/src/scripts/startup.py`
 
 To finish the configuration, run:  
 `sudo reboot`

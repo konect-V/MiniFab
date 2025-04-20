@@ -55,7 +55,7 @@ Pour comprendre l'architecture du projet, vous pouvez examiner les fichiers clé
    ```
 4. Lancez le script d'installation :
    ```bash
-   cd MiniFab/scripts && python setup.py
+   cd MiniFab/src/scripts && python setup.py
    ```
 
 > [!NOTE]
