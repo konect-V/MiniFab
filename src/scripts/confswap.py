@@ -3,6 +3,9 @@ import sys
 
 def create_symlink(src_file, dest_file):
     try:
+        if os.path.exists(dest_file):
+            if os.path.isfile(dest_file):
+                os.remove(dest_file)
         if os.path.islink(dest_file):
             os.unlink(dest_file)
         os.symlink(src_file, dest_file)
