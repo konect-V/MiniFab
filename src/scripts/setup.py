@@ -58,7 +58,7 @@ def copy_config_files():
     dest_dir = os.path.join(user_dir, "printer_data/config")
 
     try:
-        subprocess.run(f"cp -r {source_dir} {dest_dir}", shell=True, check=True)
+        subprocess.run(f"cp -f -r {source_dir} {dest_dir}", shell=True, check=True)
         print(f"Les fichiers ont été copiés de {source_dir} vers {dest_dir}.")
     except subprocess.CalledProcessError as e:
         print(f"Une erreur est survenue lors de la copie des fichiers : {e}")
