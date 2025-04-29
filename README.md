@@ -1,4 +1,4 @@
-![capture d'écran](./docs/assets/img/screenshot.png)
+![capture d'écran](./docs/assets/img/logo.png)
 
 ## Aperçu
 
@@ -47,7 +47,7 @@ Pour comprendre l'architecture du projet, vous pouvez examiner les fichiers clé
 
 #### Installation
 
-1. Flashez l'OS sur votre Raspberry Pi en suivant le guide dans `computer_setup_procedure.md`
+1. Flashez l'OS sur votre Raspberry Pi en suivant le guide dans `docs/computer_setup_procedure.md`
 2. Connectez-vous via SSH à votre Raspberry Pi
 3. Clonez le dépôt :
    ```bash
