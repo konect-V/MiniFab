@@ -30,6 +30,14 @@ Install OctoEverywhere and activate the shared connection: <https://octoeverywhe
 
 Then refer to **octopus_can_bridge_setup.md** for further instructions.  
 
+Setup CAN network :
+`sudo nano /etc/network/interfaces.d/can0`
+and then paste the following content and then close nano :
+`allow-hotplug can0 
+iface can0 can static 
+    bitrate 500000 
+    up ifconfig $IFACE txqueuelen 128`
+
 Finally, enable the automatic firmware update system by running the command:  
 `sudo crontab -e`  
 and adding the following line:  
