@@ -2,6 +2,8 @@
 
 ## Motherboard Setup Procedure
 
+### Mainsail
+
 Install the software from <https://www.raspberrypi.com/software/>.
 
 Then launch it.
@@ -18,6 +20,8 @@ Once finished, insert the SD card into the Raspberry Pi.
 
 Install an application like MobaXterm to connect via SSH. Use the parameters that were already set during the OS flashing onto the SD card.
 
+### Klipper configuration
+
 Next, execute:  
 `git clone https://github.com/DeVinci-FabLab/MiniFab`  
 
@@ -28,9 +32,11 @@ Install OctoPrint (this should be included in the `setup.py` script).
 
 Install OctoEverywhere and activate the shared connection: <https://octoeverywhere.com/> (this should also be included in the `setup.py` script).  
 
+### CAN
+
 Then refer to **octopus_can_bridge_setup.md** for further instructions.  
 
-Setup CAN network :
+Set up the CAN network interface if it hasn't been configured already :
 `sudo nano /etc/network/interfaces.d/can0`
 and then paste the following content and then close nano :
 ```
@@ -39,6 +45,8 @@ iface can0 can static
     bitrate 500000 
     up ifconfig $IFACE txqueuelen 128
 ```
+
+### Startup
 
 Finally, enable the automatic firmware update system by running the command:  
 `sudo crontab -e`  
