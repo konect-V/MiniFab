@@ -54,8 +54,8 @@ def install_kiauh():
         print(f"Une erreur est survenue : {e}")
 
 def copy_config_files():
-    source_dir = os.path.join(repo_dir, "src/config")
-    dest_dir = os.path.join(user_dir, "printer_data/config")
+    source_dir = os.path.join(repo_dir, "src/config/*")
+    dest_dir = os.path.join(user_dir, "printer_data/config/*")
 
     try:
         subprocess.run(f"cp -r {source_dir} {dest_dir}", shell=True, check=True)
