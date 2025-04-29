@@ -1,4 +1,4 @@
-![capture d'écran](./docs/assets/img/screenshot.png)
+![capture d'écran](./docs/assets/img/logo.png)
 
 ## Aperçu
 
