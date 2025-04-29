@@ -55,7 +55,7 @@ def install_kiauh():
 
 def copy_config_files():
     source_dir = os.path.join(repo_dir, "src/config/")
-    dest_dir = os.path.join(user_dir, "printer_data/config/")
+    dest_dir = os.path.join(user_dir, "printer_data/")
 
     try:
         subprocess.run(f"cp -r {source_dir} {dest_dir}", shell=True, check=True)
