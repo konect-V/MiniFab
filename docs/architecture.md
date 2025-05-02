@@ -120,14 +120,6 @@ Toolheads are detected via CAN bus UUIDs. The `autofirmware.py` script monitors 
 
 The MiniFab includes a web interface for monitoring and control, with status pages, logs, and toolhead management.
 
-## Future Improvements
-
-1. **JSON Configuration Generation**: Consider implementing a system to generate Klipper configuration files from JSON templates, which could simplify configuration management.
-
-2. **Improved Probing**: Enhance the implementation of the probe system for better accuracy and reliability.
-
-3. **USB to CAN Bus**: Add support for USB to CAN bus functionality on the Octopus board to expand connectivity options.
-
 ## Notes
 
 - The "idle" mode is included in the toolhead directory for consistency, even though it represents a state rather than a physical toolhead.
