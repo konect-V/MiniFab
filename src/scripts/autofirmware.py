@@ -64,7 +64,7 @@ def extract_canbus_uuids():
     global firmware_available
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    config_dir = os.path.join(script_dir, "../config")
+    config_dir = os.path.join(script_dir, "../config/toolheads")
     uuid_mapping = {}
 
     for folder in os.listdir(config_dir):
