@@ -14,7 +14,7 @@ def create_symlink(src_file, dest_file):
         print(f"Erreur {src_file}: {e}")
 
 def confswap(config_name):
-    base_path = "/home/minifab/printer_data/config/"
+    base_path = "/home/minifab/printer_data/config/toolheads"
     config_path = os.path.join(base_path, config_name)
 
     # Vérifie si le dossier existe
