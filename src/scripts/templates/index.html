@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="{{url_for('static', filename='logo.png')}}"/>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}"/>
     <title>Minifab Dashboard - Home</title>
     <style>
         body {
@@ -108,7 +108,7 @@
     </style>
 </head>
 <body>
-    <img src="{{url_for('static', filename='logo.png')}}" alt="Minifab Logo" class="logo">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Minifab Logo" class="logo">
     <div class="container">
         <h1>Minifab Dashboard</h1>
         <div id="status" class="status success"></div>
@@ -170,7 +170,7 @@
 
                     } else {
                         statusDiv.className = 'status success';
-                        statusDiv.innerHTML = `<img src="{{url_for('static', filename='success.svg')}}" alt="Success Logo">Everything is running smoothly`;
+                        statusDiv.innerHTML = `<img src="{{ url_for('static', filename='success.svg') }}" alt="Success Logo">Everything is running smoothly`;
                     }
                 });
         }
@@ -178,7 +178,7 @@
             fetch('/toolhead')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('toolhead-img').src = `{{url_for('static', filename='')}}${data.toolhead}.svg`;
+                    document.getElementById('toolhead-img').src = `{{ url_for('static', filename='') }}${data.toolhead}.svg`;
                     document.getElementById('toolhead-text').textContent = `Current toolhead : ${data.toolhead}, Forced : ${data.forced}`;
                 });
         }
