@@ -1,11 +1,16 @@
 from io import StringIO
 import sys
+import os
 from threading import Thread
 from flask import Flask, jsonify, render_template, request
 from autofirmware import autofirmware_daemon, force_autofirmware, get_logs, get_last_error, get_current_toolhead, get_current_firmware_available, get_forced
 from setup import update_config
 
-app = Flask(__name__)
+# Create Flask app with correct template and static paths
+script_dir = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__, 
+            template_folder=os.path.join(script_dir, "templates"),
+            static_folder=os.path.join(script_dir, "static"))
 
 @app.route('/')
 def index():
@@ -47,8 +52,7 @@ def force_firmware():
         return jsonify({"message": f"Error: {str(e)}"}), 500
 
 if __name__ == '__main__':
-    autofirmware_daemon_thread = Thread(target = autofirmware_daemon)
+    autofirmware_daemon_thread = Thread(target=autofirmware_daemon)
     autofirmware_daemon_thread.daemon = True
     autofirmware_daemon_thread.start()
     app.run(host="0.0.0.0", port=8000)
-

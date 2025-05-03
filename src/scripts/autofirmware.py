@@ -40,19 +40,19 @@ def log(msg, is_error):
         last_error_str = str
 
 def get_canbus_uuid():
-    # Commande à exécuter
+    # Command to execute
     command = "/home/minifab/klippy-env/bin/python /home/minifab/klipper/scripts/canbus_query.py can0"
     
     try:
-        # Exécution de la commande
+        # Execute command
         result = subprocess.run(command, shell=True, text=True, capture_output=True)
         
-        # Vérification des erreurs
+        # Check for errors
         if result.returncode != 0:
             log(result.stderr, True)
             return None
         
-        # Extraction des UUIDs avec une regex
+        # Extract UUIDs with regex
         uuids = re.findall(r"canbus_uuid=([a-fA-F0-9]+)", result.stdout)
         return uuids
     except Exception as e:
@@ -63,21 +63,20 @@ def get_canbus_uuid():
 def extract_canbus_uuids():
     global firmware_available
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    config_dir = os.path.join(script_dir, "../config/toolheads")
+    config_dir = "/home/minifab/printer_data/config/toolheads"
     uuid_mapping = {}
 
     for folder in os.listdir(config_dir):
         folder_path = os.path.join(config_dir, folder)
         printer_cfg_path = os.path.join(folder_path, "printer.cfg")
 
-        # Vérifie que c'est un dossier et qu'il contient un fichier printer.cfg
+        # Check if it's a directory and contains a printer.cfg file
         if os.path.isdir(folder_path) and os.path.isfile(printer_cfg_path):
             try:
                 with open(printer_cfg_path, 'r') as file:
                     content = file.read()
                 
-                # Extraction de tous les canbus_uuid dans le fichier
+                # Extract all canbus_uuid in the file
                 uuids = re.findall(r"canbus_uuid:\s*([a-fA-F0-9]+)", content)
                 
                 if uuids:
@@ -123,7 +122,7 @@ def firmware_change(name):
 
 def autofirmware_daemon():
     global current_toolhead
-    # set at iddle state first to avoid klipper error at startup
+    # set at idle state first to avoid klipper error at startup
 
     current_toolhead = "iddle"
     firmware_change(current_toolhead)

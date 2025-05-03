@@ -1,5 +1,6 @@
 import subprocess
 import os
+import shutil
 
 is_kiauh = 0
 user_dir = "/home/minifab"
@@ -7,13 +8,13 @@ repo_dir = os.path.join(user_dir, "MiniFab")
 
 def ask_confirmation():
     while True:
-        response = input("As-tu bien lu les instructions pour installer gcode_shell_command ? (oui/non) : ").strip().lower()
-        if response == "oui":
+        response = input("Have you read the instructions for installing gcode_shell_command? (yes/no): ").strip().lower()
+        if response == "yes":
             return True
-        elif response == "non":
-            print("Merci de lire les instructions avant de continuer.")
+        elif response == "no":
+            print("Please read the instructions before continuing.")
         else:
-            print("Réponse invalide. Merci de répondre par 'oui' ou 'non'.")
+            print("Invalid response. Please answer 'yes' or 'no'.")
 
 def install_kiauh():
     global is_kiauh
@@ -44,61 +45,77 @@ def install_kiauh():
 
         os.chdir(kiauh_path)
 
-        # Installer gcode_shell_command à partir de KIAUH
-        print("Suivez les instructions dans KIAUH pour installer KlipperScreen (utiliser xserver), OctoEverywhere (configurer avec un compte) et gcode_shell_command(B->Advanced->G Code Shell Command->Y->n->B->Q) à partir de KIAUH...")
+        # Install gcode_shell_command from KIAUH
+        print("Follow the instructions in KIAUH to install KlipperScreen (use xserver), OctoEverywhere (configure with an account) and gcode_shell_command (B->Advanced->G Code Shell Command->Y->n->B->Q) from KIAUH...")
         ask_confirmation()
-        subprocess.run(["./kiauh.sh"], check=True)  # Lancement du script KIAUH pour accéder aux options d'installation
+        subprocess.run(["./kiauh.sh"], check=True)  # Launch KIAUH script to access installation options
 
         is_kiauh = 1
     except subprocess.CalledProcessError as e:
-        print(f"Une erreur est survenue : {e}")
+        print(f"An error occurred: {e}")
 
 def copy_config_files():
     source_dir = os.path.join(repo_dir, "src/config/")
-    dest_dir = os.path.join(user_dir, "printer_data/")
+    dest_dir = os.path.join(user_dir, "printer_data/config/")
+    
+    # Ensure destination directory exists
+    os.makedirs(dest_dir, exist_ok=True)
 
     try:
-        subprocess.run(f"cp -r {source_dir} {dest_dir}", shell=True, check=True)
-        print(f"Les fichiers ont été copiés de {source_dir} vers {dest_dir}.")
-    except subprocess.CalledProcessError as e:
-        print(f"Une erreur est survenue lors de la copie des fichiers : {e}")
+        # Copy all files and directories recursively
+        for item in os.listdir(source_dir):
+            source_item = os.path.join(source_dir, item)
+            dest_item = os.path.join(dest_dir, item)
+            
+            if os.path.isdir(source_item):
+                # For directories, copy recursively
+                if os.path.exists(dest_item):
+                    shutil.rmtree(dest_item)
+                shutil.copytree(source_item, dest_item)
+            else:
+                # For files, just copy
+                shutil.copy2(source_item, dest_item)
+                
+        print(f"Files have been copied from {source_dir} to {dest_dir}.")
+    except Exception as e:
+        print(f"An error occurred while copying files: {e}")
 
 def reboot():
     os.system('systemctl reboot -i')
 
 def update_config():
     try:
-        print("Mise à jour du dépôt...")
+        print("Updating repository...")
         subprocess.run(["git", "-C", repo_dir, "pull"], check=True)
-        print("Mise à jour du dépôt terminée.")
-        print("Mise à jour de la config...")
+        print("Repository update completed.")
+        print("Updating configuration...")
         copy_config_files()
-        print("Mise à jour du config terminée.")
+        print("Configuration update completed.")
         os.system('sudo systemctl restart klipper')
     except subprocess.CalledProcessError as e:
-        print(f"Une erreur est survenue lors de la mise à jour du dépôt : {e}")
+        print(f"An error occurred during repository update: {e}")
 
 
 setup_status_file = "setup_status.txt"
 
 def setup_config():
-    # Code pour la configuration initiale
-    print("Exécution du setup de la config...")
+    # Code for initial configuration
+    print("Executing config setup...")
     install_kiauh()
     copy_config_files()
-    # Simule la configuration
+    # Simulate configuration
     with open(setup_status_file, "w") as f:
         f.write("setup_done")
-    print("Setup terminé.")
+    print("Setup completed.")
     reboot()
 
 def menu():
-    # Vérifie si le setup a déjà été effectué en lisant le fichier de statut
+    # Check if setup has already been done by reading the status file
     if os.path.exists(setup_status_file):
         with open(setup_status_file, "r") as f:
             status = f.read().strip()
         if status == "setup_done":
-            print("Le setup a déjà été effectué. Passage à la mise à jour de la config.")
+            print("Setup has already been completed. Proceeding to update the configuration.")
             update_config()
             return
         else:
