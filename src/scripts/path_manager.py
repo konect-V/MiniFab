@@ -8,9 +8,6 @@ class PathManager:
     def __init__(self, config_path: str):
         """
         Initialize the PathManager with a path to the JSON configuration file.
-        
-        Args:
-            config_path: Path to the JSON configuration file
         """
         if not os.path.exists(config_path):
             raise FileNotFoundError(f"Configuration file not found: {config_path}")

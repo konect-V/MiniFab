@@ -268,7 +268,7 @@ def restart():
         bool: True if successful, False otherwise
     """
     try:
-        command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.restart\",\"id\": 8463}' -s localhost:7125/printer/restart"
+        command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.restart\",\"id\": 8463}' minifab.local/printer/restart"
         result = subprocess.run(command, shell=True, text=True, capture_output=True, timeout=5)
         
         if result.returncode == 0:
@@ -289,7 +289,7 @@ def firmware_restart():
         bool: True if successful, False otherwise
     """
     try:
-        command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.firmware_restart\",\"id\": 8463}' -s localhost:7125/printer/firmware_restart"
+        command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.firmware_restart\",\"id\": 8463}' minifab.local/printer/firmware_restart"
         result = subprocess.run(command, shell=True, text=True, capture_output=True, timeout=5)
         
         if result.returncode == 0:
@@ -305,12 +305,6 @@ def firmware_restart():
 
 def firmware_swap(toolhead):
     """Switch Klipper configuration to a different toolhead.
-    
-    Args:
-        toolhead (str): Name of the toolhead to switch to
-        
-    Returns:
-        bool: True if successful, False otherwise
     """
     # Try using path manager first
     if path_manager:
