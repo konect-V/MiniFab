@@ -137,9 +137,6 @@ def autofirmware_daemon():
                 for uuid in uuids:
                     current_toolhead = find_folder_by_uuid(uuid, uuid_mapping)
                     firmware_change(current_toolhead)
-            elif current_toolhead != "iddle":
-                current_toolhead = "iddle"
-                firmware_change(current_toolhead)
             time.sleep(5)
 
 def force_autofirmware(firmware):
