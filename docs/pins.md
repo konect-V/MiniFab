@@ -2,8 +2,8 @@
 
 | Pin (MCU/Pin)                | Fonction / Signal                | Fichier(s) de configuration                                 |
 |------------------------------|----------------------------------|------------------------------------------------------------|
-| HE0/PA2                                           | Chauffage lit                    | toolheads/print/machine.cfg, toolheads/pellet/machine.cfg  |
-| TB/PF3                                            | Thermistance lit                 | toolheads/print/machine.cfg, toolheads/pellet/machine.cfg  |
+| OctopusV1.1_HE0/PA2                               | Chauffage lit                    | toolheads/print/machine.cfg, toolheads/pellet/machine.cfg  |
+| OctopusV1.1_TB/PF3                                | Thermistance lit                 | toolheads/print/machine.cfg, toolheads/pellet/machine.cfg  |
 | EBB42v1.2_Internal/EBBCanPRINT:PD0                | Extrudeur step                   | toolheads/print/machine.cfg                                |
 | EBB42v1.2_Internal/EBBCanPRINT:PD1                | Extrudeur dir                    | toolheads/print/machine.cfg                                |
 | EBB42v1.2_Internal/EBBCanPRINT:PD2                | Extrudeur enable                 | toolheads/print/machine.cfg                                |
@@ -65,4 +65,5 @@
 | EBB42v1.2_Internal/EBBCanMILL:PB2                 | ADXL345 MISO                     | toolheads/mill/machine.cfg                                 |
 | EBB42v1.2_Internal/EBBCanMILL:PB6                 | Endstop de la broche             | toolheads/mill/machine.cfg                                 |
 | EBB42v1.2_TH0/EBBCanMILL:PA3                      | Thermistance de la broche        | toolheads/mill/machine.cfg                                 |
+| OctopusV1.1_HE1/PA3                               | Prise aspirateur                 | board_pins.cfg                                             |
 
