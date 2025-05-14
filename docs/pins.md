@@ -2,8 +2,8 @@
 
 | Pin (MCU/Pin)                | Fonction / Signal                | Fichier(s) de configuration                                 |
 |------------------------------|----------------------------------|------------------------------------------------------------|
-| HE0/PA2                          | Chauffage lit (heater_bed)       | toolheads/print/machine.cfg, toolheads/pellet/machine.cfg  |
-| TB/PF3                          | Thermistance lit (sensor_pin)    | toolheads/print/machine.cfg, toolheads/pellet/machine.cfg  |
+| HE0/PA2                                           | Chauffage lit                    | toolheads/print/machine.cfg, toolheads/pellet/machine.cfg  |
+| TB/PF3                                            | Thermistance lit                 | toolheads/print/machine.cfg, toolheads/pellet/machine.cfg  |
 | EBB42v1.2_Internal/EBBCanPRINT:PD0                | Extrudeur step                   | toolheads/print/machine.cfg                                |
 | EBB42v1.2_Internal/EBBCanPRINT:PD1                | Extrudeur dir                    | toolheads/print/machine.cfg                                |
 | EBB42v1.2_Internal/EBBCanPRINT:PD2                | Extrudeur enable                 | toolheads/print/machine.cfg                                |
