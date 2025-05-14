@@ -63,16 +63,16 @@ def get_canbus_uuid():
 def extract_canbus_uuids():
     global firmware_available
 
-    config_dir = "/home/minifab/printer_data/config/toolheads"
-    uuid_mapping = {}
+    try:
+        config_dir = "/home/minifab/printer_data/config/toolheads"
+        uuid_mapping = {}
 
-    for folder in os.listdir(config_dir):
-        folder_path = os.path.join(config_dir, folder)
-        printer_cfg_path = os.path.join(folder_path, "printer.cfg")
+        for folder in os.listdir(config_dir):
+            folder_path = os.path.join(config_dir, folder)
+            printer_cfg_path = os.path.join(folder_path, "printer.cfg")
 
-        # Check if it's a directory and contains a printer.cfg file
-        if os.path.isdir(folder_path) and os.path.isfile(printer_cfg_path):
-            try:
+            # Check if it's a directory and contains a printer.cfg file
+            if os.path.isdir(folder_path) and os.path.isfile(printer_cfg_path):
                 with open(printer_cfg_path, 'r') as file:
                     content = file.read()
                 
@@ -82,8 +82,8 @@ def extract_canbus_uuids():
                 if uuids:
                     uuid_mapping[folder] = uuids
                     firmware_available.append(folder)
-            except Exception as e:
-                log(e, True)
+    except Exception as e:
+        log(str(e), True)
     
     return uuid_mapping
 
@@ -94,20 +94,29 @@ def find_folder_by_uuid(uuid, uuid_mapping):
     return None
 
 def restart():
-    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.restart\",\"id\": 8463}' minifab.local/printer/restart"
+    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.restart\"}' 0.0.0.0/printer/restart"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
     if result.returncode != 0:
         log(result.stderr, True)
-        return None
+        return False
+    return True
 
 def firmware_restart():
-    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.firmware_restart\",\"id\": 8463}' minifab.local/printer/firmware_restart"
+    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.firmware_restart\"}' 0.0.0.0/printer/firmware_restart"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
     if result.returncode != 0:
         log(result.stderr, True)
-        return None
+        return False
+    return True
+
+def is_ready():
+    command = "curl 0.0.0.0/printer/info"
+    result = subprocess.run(command, shell=True, text=True, capture_output=True)
+    if '"state":"ready"' in result.stdout:
+        return True
+    return False
 
 def firmware_swap(name):
     confswap(name)
@@ -117,7 +126,10 @@ def firmware_change(name):
     restart()
     # wait restart
     time.sleep(5)
-    firmware_restart()
+    ret = False
+    while not ret:
+        ret = firmware_restart()
+        time.sleep(1)
     log(f"Firmware changed to : {name}", False) 
 
 def autofirmware_daemon():
@@ -131,13 +143,14 @@ def autofirmware_daemon():
 
     while True:
         if not forced:
-            uuids = get_canbus_uuid()
-            
-            if uuids:
-                for uuid in uuids:
-                    current_toolhead = find_folder_by_uuid(uuid, uuid_mapping)
-                    firmware_change(current_toolhead)
-            time.sleep(5)
+            if not is_ready():
+                uuids = get_canbus_uuid()
+                
+                if uuids:
+                    for uuid in uuids:
+                        current_toolhead = find_folder_by_uuid(uuid, uuid_mapping)
+                        firmware_change(current_toolhead)
+        time.sleep(5)
 
 def force_autofirmware(firmware):
     global forced, current_toolhead
