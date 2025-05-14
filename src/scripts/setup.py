@@ -42,6 +42,7 @@ def install_kiauh():
 
         print_area_bed_mesh_path = os.path.expanduser("~/print_area_bed_mesh")
         subprocess.run(["git", "clone", "https://github.com/Turge08/print_area_bed_mesh.git", print_area_bed_mesh_path], check=True)
+        subprocess.run([os.path.join(print_area_bed_mesh_path, "/install.sh")], check=True)
 
         os.chdir(kiauh_path)
 
