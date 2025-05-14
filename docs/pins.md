@@ -1,4 +1,4 @@
-# Tableau des Pins, Fonctions et Fichiers Associés
+# Table of Pins, Functions and Associated Files
 
 | Pin (MCU/Pin)                | Function                | Config file(s)                                 |
 |------------------------------|-------------------------|------------------------------------------------|
