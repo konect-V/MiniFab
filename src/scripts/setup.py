@@ -1,10 +1,17 @@
 import subprocess
 import os
 import shutil
+import argparse
 
 is_kiauh = 0
 user_dir = "/home/minifab"
 repo_dir = os.path.join(user_dir, "MiniFab")
+
+source_config_dir = os.path.join(repo_dir, "src/config/")
+dest_config_dir = os.path.join(user_dir, "printer_data/config/")
+
+print_area_bed_mesh_path = os.path.join(user_dir, "print_area_bed_mesh")
+kiauh_path = os.path.join(user_dir, "kiauh")
 
 def ask_confirmation():
     while True:
@@ -25,12 +32,11 @@ def install_kiauh():
     try:
         # Step 1: Update system and install git if not already installed
         print("Updating system and installing git...")
-        subprocess.run(["sudo", "pip", "install", "flask"], check=True)
+        subprocess.run(["sudo", "pip", "install", "flask", "--break-system-packages"], check=True)
         subprocess.run(["sudo", "apt-get", "update"], check=True)
         subprocess.run(["sudo", "apt-get", "install", "git", "-y"], check=True)
         
         # Step 2: Clone KIAUH repository into the home directory
-        kiauh_path = os.path.expanduser("~/kiauh")
         if not os.path.isdir(kiauh_path):
             print("Cloning KIAUH repository into the home directory...")
             subprocess.run(["git", "clone", "https://github.com/dw-0/kiauh.git", kiauh_path], check=True)
@@ -40,9 +46,10 @@ def install_kiauh():
         
         print("KIAUH installation completed.")
 
-        print_area_bed_mesh_path = os.path.expanduser("~/print_area_bed_mesh")
-        subprocess.run(["git", "clone", "https://github.com/Turge08/print_area_bed_mesh.git", print_area_bed_mesh_path], check=True)
-        subprocess.run([os.path.join(print_area_bed_mesh_path, "/install.sh")], check=True)
+        if not os.path.isdir(print_area_bed_mesh_path):
+            print("Cloning print_area_bed_mesh repository...")
+            subprocess.run(["git", "clone", "https://github.com/Turge08/print_area_bed_mesh.git", print_area_bed_mesh_path], check=True)
+            subprocess.run([os.path.join(print_area_bed_mesh_path, "install.sh")], check=True)
 
         os.chdir(kiauh_path)
 
@@ -55,18 +62,23 @@ def install_kiauh():
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
 
-def copy_config_files():
-    source_dir = os.path.join(repo_dir, "src/config/")
-    dest_dir = os.path.join(user_dir, "printer_data/config/")
+def update_config_files():
     
     # Ensure destination directory exists
-    os.makedirs(dest_dir, exist_ok=True)
+    os.makedirs(dest_config_dir, exist_ok=True)
 
     try:
+        # Remove existing files in the destination directory
+        if os.path.exists(dest_config_dir):
+            shutil.rmtree(dest_config_dir)
+
+        # Create the destination directory again
+        os.makedirs(dest_config_dir, exist_ok=True)
+
         # Copy all files and directories recursively
-        for item in os.listdir(source_dir):
-            source_item = os.path.join(source_dir, item)
-            dest_item = os.path.join(dest_dir, item)
+        for item in os.listdir(source_config_dir):
+            source_item = os.path.join(source_config_dir, item)
+            dest_item = os.path.join(dest_config_dir, item)
             
             if os.path.isdir(source_item):
                 # For directories, copy recursively
@@ -77,7 +89,7 @@ def copy_config_files():
                 # For files, just copy
                 shutil.copy2(source_item, dest_item)
                 
-        print(f"Files have been copied from {source_dir} to {dest_dir}.")
+        print(f"Files have been copied from {source_config_dir} to {dest_config_dir}.")
     except Exception as e:
         print(f"An error occurred while copying files: {e}")
 
@@ -90,7 +102,7 @@ def update_config():
         subprocess.run(["git", "-C", repo_dir, "pull"], check=True)
         print("Repository update completed.")
         print("Updating configuration...")
-        copy_config_files()
+        update_config_files()
         print("Configuration update completed.")
         os.system('sudo systemctl restart klipper')
     except subprocess.CalledProcessError as e:
@@ -103,16 +115,25 @@ def setup_config():
     # Code for initial configuration
     print("Executing config setup...")
     install_kiauh()
-    copy_config_files()
+    update_config_files()
     # Simulate configuration
     with open(setup_status_file, "w") as f:
         f.write("setup_done")
     print("Setup completed.")
     reboot()
 
-def menu():
+def check_username():
+    # Check if the username is "minifab"
+    if os.getlogin() != "minifab":
+        print("This script must be run as the user 'minifab'.")
+        return False
+    return True
+
+def menu(force_setup):
     # Check if setup has already been done by reading the status file
-    if os.path.exists(setup_status_file):
+    if not check_username():
+        return
+    if os.path.exists(setup_status_file) and not force_setup:
         with open(setup_status_file, "r") as f:
             status = f.read().strip()
         if status == "setup_done":
@@ -125,4 +146,7 @@ def menu():
         setup_config()
 
 if __name__ == '__main__':
-    menu()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', action='store_true')
+    args = parser.parse_args()
+    menu(args.f)
