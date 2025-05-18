@@ -13,6 +13,8 @@ dest_config_dir = os.path.join(user_dir, "printer_data/config/")
 print_area_bed_mesh_path = os.path.join(user_dir, "print_area_bed_mesh")
 kiauh_path = os.path.join(user_dir, "kiauh")
 
+setup_status_file = os.path.join(repo_dir, "setup_status.txt")
+
 def ask_confirmation():
     while True:
         response = input("Have you read the instructions for installing gcode_shell_command? (yes/no): ").strip().lower()
@@ -62,18 +64,19 @@ def install_kiauh():
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
 
-def update_config_files():
+def update_config_files(clear_config):
     
     # Ensure destination directory exists
     os.makedirs(dest_config_dir, exist_ok=True)
 
     try:
-        # Remove existing files in the destination directory
-        if os.path.exists(dest_config_dir):
-            shutil.rmtree(dest_config_dir)
+        if clear_config:
+            # Remove existing files in the destination directory
+            if os.path.exists(dest_config_dir):
+                shutil.rmtree(dest_config_dir)
 
-        # Create the destination directory again
-        os.makedirs(dest_config_dir, exist_ok=True)
+            # Create the destination directory again
+            os.makedirs(dest_config_dir, exist_ok=True)
 
         # Copy all files and directories recursively
         for item in os.listdir(source_config_dir):
@@ -96,49 +99,61 @@ def update_config_files():
 def reboot():
     os.system('systemctl reboot -i')
 
-def update_config():
+def update_config(clear_config):
     try:
-        print("Updating repository...")
-        subprocess.run(["git", "-C", repo_dir, "pull"], check=True)
-        print("Repository update completed.")
+        try:
+            print("Updating repository...")
+            subprocess.run(["git", "-C", repo_dir, "pull"], check=True)
+            print("Repository update completed.")
+        except subprocess.CalledProcessError:
+            print("Repository update failed.")
+            
         print("Updating configuration...")
-        update_config_files()
+        update_config_files(clear_config)
         print("Configuration update completed.")
         os.system('sudo systemctl restart klipper')
     except subprocess.CalledProcessError as e:
         print(f"An error occurred during repository update: {e}")
 
 
-setup_status_file = "setup_status.txt"
 
 def setup_config():
     # Code for initial configuration
     print("Executing config setup...")
     install_kiauh()
-    update_config_files()
+    update_config_files(True)
     # Simulate configuration
     with open(setup_status_file, "w") as f:
         f.write("setup_done")
     print("Setup completed.")
-    reboot()
+    # reboot()
 
 def check_username():
     # Check if the username is "minifab"
-    if os.getlogin() != "minifab":
+    if os.environ.get('USER') != "minifab":
         print("This script must be run as the user 'minifab'.")
         return False
     return True
 
-def menu(force_setup):
+def check_dir():
+    # Check if the directory exists
+    if not os.path.exists(repo_dir):
+        print(f"The directory {repo_dir} does not exist.")
+        return False
+    return True
+
+def menu(force_setup, clear_config, no_check):
     # Check if setup has already been done by reading the status file
-    if not check_username():
+    if not check_username() and not no_check:
+        return
+    if not check_dir() and not no_check:
         return
     if os.path.exists(setup_status_file) and not force_setup:
         with open(setup_status_file, "r") as f:
             status = f.read().strip()
         if status == "setup_done":
             print("Setup has already been completed. Proceeding to update the configuration.")
-            update_config()
+            update_config(clear_config)
             return
         else:
             setup_config()
@@ -148,5 +163,7 @@ def menu(force_setup):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', action='store_true')
+    parser.add_argument('-c', action='store_true')
+    parser.add_argument('-nc', action='store_true')
     args = parser.parse_args()
-    menu(args.f)
+    menu(args.f, args.c, args.nc)

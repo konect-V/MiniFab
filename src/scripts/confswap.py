@@ -1,7 +1,7 @@
 import os
 import sys
 
-base_path = "/home/minifab/printer_data/config/toolheads"
+base_path = "/home/minifab/printer_data/config"
 
 def create_symlink(src_file, dest_file):
     try:
@@ -16,7 +16,7 @@ def create_symlink(src_file, dest_file):
         print(f"Error {src_file}: {e}")
 
 def confswap(config_name):
-    config_path = os.path.join(base_path, config_name)
+    config_path = os.path.join(base_path, "toolheads", config_name)
 
     # Check if the folder exists
     if not os.path.isdir(config_path):

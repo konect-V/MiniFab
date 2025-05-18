@@ -143,7 +143,7 @@ def autofirmware_daemon():
 
     while True:
         if not forced:
-            if not is_ready():
+            if not is_ready() or current_toolhead == "iddle":
                 uuids = get_canbus_uuid()
                 
                 if uuids:
