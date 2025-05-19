@@ -80,6 +80,7 @@ def extract_canbus_uuids():
                 uuids = re.findall(r"canbus_uuid:\s*([a-fA-F0-9]+)", content)
                 
                 if uuids:
+                    print(f"Found UUIDs in {folder}: {uuids}")
                     uuid_mapping[folder] = uuids
                     firmware_available.append(folder)
     except Exception as e:
