@@ -116,17 +116,26 @@ def update_config(clear_config):
         print(f"An error occurred during repository update: {e}")
 
 
+def change_klipper_repo():
+    repo_path = os.path.expanduser("~/klipper")
+    if not os.path.exists(repo_path):
+        raise FileNotFoundError(f"Le répertoire {repo_path} n'existe pas.")
+    
+    subprocess.run(["git", "remote", "set-url", "origin", "https://github.com/konect-V/klipper"], cwd=repo_path, check=True)
+    subprocess.run(["git", "fetch", "origin"], cwd=repo_path, check=True)
+    subprocess.run(["git", "checkout", "-b", "multiaxis-probe", "origin/multiaxis-probe"], cwd=repo_path, check=True)
 
 def setup_config():
     # Code for initial configuration
     print("Executing config setup...")
+    change_klipper_repo()
     install_kiauh()
     update_config_files(True)
     # Simulate configuration
     with open(setup_status_file, "w") as f:
         f.write("setup_done")
     print("Setup completed.")
-    # reboot()
+    reboot()
 
 def check_username():
     # Check if the username is "minifab"
