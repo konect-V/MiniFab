@@ -10,6 +10,9 @@ repo_dir = os.path.join(user_dir, "MiniFab")
 source_config_dir = os.path.join(repo_dir, "src/config/")
 dest_config_dir = os.path.join(user_dir, "printer_data/config/")
 
+klipper_theme_path_source = os.path.join(repo_dir, "src/klipperscreen_theme")
+klipper_theme_path_dest = os.path.join(user_dir, "KlipperScreen/styles/minifab")
+
 print_area_bed_mesh_path = os.path.join(user_dir, "print_area_bed_mesh")
 kiauh_path = os.path.join(user_dir, "kiauh")
 
@@ -64,24 +67,24 @@ def install_kiauh():
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
 
-def update_config_files(clear_config):
+def copy_files(src, dest, clear):
     
     # Ensure destination directory exists
-    os.makedirs(dest_config_dir, exist_ok=True)
+    os.makedirs(dest, exist_ok=True)
 
     try:
-        if clear_config:
+        if clear:
             # Remove existing files in the destination directory
-            if os.path.exists(dest_config_dir):
-                shutil.rmtree(dest_config_dir)
+            if os.path.exists(dest):
+                shutil.rmtree(dest)
 
             # Create the destination directory again
-            os.makedirs(dest_config_dir, exist_ok=True)
+            os.makedirs(dest, exist_ok=True)
 
         # Copy all files and directories recursively
-        for item in os.listdir(source_config_dir):
-            source_item = os.path.join(source_config_dir, item)
-            dest_item = os.path.join(dest_config_dir, item)
+        for item in os.listdir(src):
+            source_item = os.path.join(src, item)
+            dest_item = os.path.join(dest, item)
             
             if os.path.isdir(source_item):
                 # For directories, copy recursively
@@ -92,9 +95,14 @@ def update_config_files(clear_config):
                 # For files, just copy
                 shutil.copy2(source_item, dest_item)
                 
-        print(f"Files have been copied from {source_config_dir} to {dest_config_dir}.")
+        print(f"Files have been copied from {src} to {dest}.")
     except Exception as e:
         print(f"An error occurred while copying files: {e}")
+
+
+def update_config_files(clear_config):
+    copy_files(source_config_dir, dest_config_dir, clear_config)
+    copy_files(klipper_theme_path_source, klipper_theme_path_dest, clear_config)
 
 def reboot():
     os.system('systemctl reboot -i')
