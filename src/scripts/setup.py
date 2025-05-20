@@ -121,9 +121,12 @@ def change_klipper_repo():
     if not os.path.exists(repo_path):
         raise FileNotFoundError(f"Le répertoire {repo_path} n'existe pas.")
     
-    subprocess.run(["git", "remote", "set-url", "origin", "https://github.com/konect-V/klipper"], cwd=repo_path, check=True)
-    subprocess.run(["git", "fetch", "origin"], cwd=repo_path, check=True)
-    subprocess.run(["git", "checkout", "-b", "multiaxis-probe", "origin/multiaxis-probe"], cwd=repo_path, check=True)
+    try:
+        subprocess.run(["git", "remote", "set-url", "origin", "https://github.com/konect-V/klipper"], cwd=repo_path, check=True)
+        subprocess.run(["git", "fetch", "origin"], cwd=repo_path, check=True)
+        subprocess.run(["git", "checkout", "minifab"], cwd=repo_path, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while changing the Klipper repository: {e}")
 
 def setup_config():
     # Code for initial configuration
