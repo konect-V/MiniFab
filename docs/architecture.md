@@ -52,7 +52,7 @@ minifab/                         # Project root directory
 │   │       │   ├── macros.cfg      # G-code macros for plotting
 │   │       │   └── KlipperScreen.conf # KlipperScreen configuration for plotter mode
 │   │       │
-│   │       └── iddle/          # Idle mode
+│   │       └── idle/          # Idle mode
 │   │           ├── machine.cfg     # Idle mode specific parameters
 │   │           ├── printer.cfg     # Idle mode printer configuration
 │   │           └── KlipperScreen.conf # KlipperScreen configuration for idle mode

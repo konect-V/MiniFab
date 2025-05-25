@@ -1,8 +1,8 @@
-from io import StringIO
+from io import BytesIO, StringIO
 import sys
 import os
 from threading import Thread
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_file
 from autofirmware import autofirmware_daemon, force_autofirmware, get_logs, get_last_error, get_current_toolhead, get_current_firmware_available, get_forced
 from setup import update_config
 
@@ -35,6 +35,18 @@ def firmware_available():
 @app.route('/logs')
 def logs():
     return render_template('logs.html')
+
+@app.route('/download_logs')
+def download_logs():
+    buffer = BytesIO()
+    buffer.write('\n'.join(get_logs()).encode('utf-8'))
+    buffer.seek(0)
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name='log.txt',
+        mimetype='text/plain'
+    )
 
 @app.route('/forcefirmware', methods=['POST'])
 def force_firmware():

@@ -6,11 +6,15 @@ import subprocess
 from datetime import datetime
 from confswap import confswap
 
+default_firmware = "idle"
 logs = []
 last_error_str = ""
 current_toolhead = ""
 firmware_available = []
 forced = False
+
+config_dir = "/home/minifab/printer_data/config/toolheads"
+get_canbus_uuid_command = "/home/minifab/klippy-env/bin/python /home/minifab/klipper/scripts/canbus_query.py can0"
 
 def get_forced():
     return forced
@@ -39,13 +43,10 @@ def log(msg, is_error):
     if is_error:
         last_error_str = str
 
-def get_canbus_uuid():
-    # Command to execute
-    command = "/home/minifab/klippy-env/bin/python /home/minifab/klipper/scripts/canbus_query.py can0"
-    
+def get_canbus_uuid():    
     try:
         # Execute command
-        result = subprocess.run(command, shell=True, text=True, capture_output=True)
+        result = subprocess.run(get_canbus_uuid_command, shell=True, text=True, capture_output=True)
         
         # Check for errors
         if result.returncode != 0:
@@ -64,7 +65,6 @@ def extract_canbus_uuids():
     global firmware_available
 
     try:
-        config_dir = "/home/minifab/printer_data/config/toolheads"
         uuid_mapping = {}
 
         for folder in os.listdir(config_dir):
@@ -112,11 +112,16 @@ def firmware_restart():
         return False
     return True
 
-def is_ready():
+def is_ready_or_startup():
     command = "curl 0.0.0.0/printer/info"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
-    if '"state":"ready"' in result.stdout:
+    if '"state": "ready"' in result.stdout or '"state": "startup"' in result.stdout:
+        if '"state": "ready"' in result.stdout:
+            log("Printer is ready", False)
+        else:
+            log("Printer is starting up", False)
         return True
+    log(result.stdout, False)
     return False
 
 def firmware_swap(name):
@@ -135,16 +140,16 @@ def firmware_change(name):
 
 def autofirmware_daemon():
     global current_toolhead
-    # set at idle state first to avoid klipper error at startup
-
-    current_toolhead = "iddle"
-    firmware_change(current_toolhead)
 
     uuid_mapping = extract_canbus_uuids()
 
+    # set at default_firmware first to avoid klipper error at startup
+    current_toolhead = default_firmware
+    firmware_change(current_toolhead)
+
     while True:
         if not forced:
-            if not is_ready() or current_toolhead == "iddle":
+            if not is_ready_or_startup() or current_toolhead == default_firmware:
                 uuids = get_canbus_uuid()
                 
                 if uuids:
@@ -157,8 +162,8 @@ def force_autofirmware(firmware):
     global forced, current_toolhead
     if firmware == "auto":
         forced = False
-        current_toolhead = "iddle"
-        firmware_change("iddle")
+        current_toolhead = default_firmware
+        firmware_change(default_firmware)
     else: 
         forced = True
         current_toolhead = firmware
