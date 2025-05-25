@@ -177,7 +177,7 @@ are copied over from earlier.
 
 Type: *'make'* to compile the Klipper firmware
 
-![](assets/octopus_can_bridge_setup/img/image059.png)
+![](assets/octopus_can_bridge_setup/img/image061.png)
 
 As before, rename the Klipper file to prevent overwriting in the next
 step. Type: *'cd out'* followed by *'mv klipper.bin
