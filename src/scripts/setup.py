@@ -10,8 +10,11 @@ repo_dir = os.path.join(user_dir, "MiniFab")
 source_config_dir = os.path.join(repo_dir, "src/config/")
 dest_config_dir = os.path.join(user_dir, "printer_data/config/")
 
-klipper_theme_path_source = os.path.join(repo_dir, "src/klipperscreen_theme")
-klipper_theme_path_dest = os.path.join(user_dir, "KlipperScreen/styles/minifab")
+klipperscreen_theme_path_source = os.path.join(repo_dir, "src/klipperscreen_theme")
+klipperscreen_theme_path_dest = os.path.join(user_dir, "KlipperScreen/styles/minifab")
+
+mainsail_theme_path_source = os.path.join(repo_dir, "src/mainsail_theme")
+mainsail_theme_path_dest = os.path.join(dest_config_dir, ".theme")
 
 print_area_bed_mesh_path = os.path.join(user_dir, "print_area_bed_mesh")
 kiauh_path = os.path.join(user_dir, "kiauh")
@@ -102,7 +105,8 @@ def copy_files(src, dest, clear):
 
 def update_config_files(clear_config):
     copy_files(source_config_dir, dest_config_dir, clear_config)
-    copy_files(klipper_theme_path_source, klipper_theme_path_dest, clear_config)
+    copy_files(klipperscreen_theme_path_source, klipperscreen_theme_path_dest, clear_config)
+    copy_files(mainsail_theme_path_source, mainsail_theme_path_dest, clear_config)
 
 def reboot():
     os.system('systemctl reboot -i')
