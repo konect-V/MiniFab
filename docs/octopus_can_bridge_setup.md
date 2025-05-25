@@ -275,5 +275,3 @@ firmware restart.
 Click 'Machine', check that both CAN UUIDs are present and you are done!
 As with non-CAN installs, time to configure printer.cfg and continue
 with set up/tuning. Best of luck!
-
-![](assets/octopus_can_bridge_setup/img/image044.png)
