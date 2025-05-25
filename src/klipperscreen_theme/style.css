@@ -23,7 +23,8 @@ treeview.view,
 combobox arrow,
 window {
     background-color: @bg;
-    background-image: url("./styles/z-bolt/images/wallpaper.png");
+    background-image: url("/home/minifab/KlipperScreen/styles/minifab/images/wallpaper.png");
+    filter: blur(8px);
 }
 
 button {
