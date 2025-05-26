@@ -40,7 +40,7 @@ def install_kiauh():
     try:
         # Step 1: Update system and install git if not already installed
         print("Updating system and installing git...")
-        subprocess.run(["sudo", "pip", "install", "flask", "--break-system-packages"], check=True)
+        subprocess.run(["sudo", "pip", "install", "flask"], check=True)
         subprocess.run(["sudo", "apt-get", "update"], check=True)
         subprocess.run(["sudo", "apt-get", "install", "git", "-y"], check=True)
         
