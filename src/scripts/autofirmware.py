@@ -148,6 +148,10 @@ def autofirmware_daemon():
     current_toolhead = default_firmware
     firmware_change(current_toolhead)
 
+    while not is_ready_or_startup():
+        log("Waiting for printer to be ready or startup", False)
+        time.sleep(5)
+
     while True:
         if not forced:
             if not is_ready_or_startup() or current_toolhead == default_firmware:
