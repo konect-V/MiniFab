@@ -96,7 +96,7 @@ def find_folder_by_uuid(uuid, uuid_mapping):
     return None
 
 def restart():
-    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.restart\"}' 0.0.0.0/printer/restart"
+    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.restart\",\"id\": 8463}' 0.0.0.0/printer/restart"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
     if result.returncode != 0:
@@ -105,7 +105,7 @@ def restart():
     return True
 
 def firmware_restart():
-    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.firmware_restart\"}' 0.0.0.0/printer/firmware_restart"
+    command = "curl -d '{\"jsonrpc\": \"2.0\",\"method\": \"printer.firmware_restart\",\"id\": 8463}' 0.0.0.0/printer/firmware_restart"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
 
     if result.returncode != 0:
