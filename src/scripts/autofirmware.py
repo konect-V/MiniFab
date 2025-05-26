@@ -92,6 +92,7 @@ def find_folder_by_uuid(uuid, uuid_mapping):
     for folder, uuids in uuid_mapping.items():
         if uuid in uuids:
             return folder
+    log(f"UUID {uuid} not found in any folder", True)
     return None
 
 def restart():
