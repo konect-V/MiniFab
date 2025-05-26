@@ -75,14 +75,14 @@ def extract_canbus_uuids():
             if os.path.isdir(folder_path) and os.path.isfile(printer_cfg_path):
                 with open(printer_cfg_path, 'r') as file:
                     content = file.read()
-                
-                # Extract all canbus_uuid in the file
-                uuids = re.findall(r"canbus_uuid:\s*([a-fA-F0-9]+)", content)
-                
-                if uuids:
-                    print(f"Found UUIDs in {folder}: {uuids}")
-                    uuid_mapping[folder] = uuids
-                    firmware_available.append(folder)
+                    
+                    # Extract all canbus_uuid in the file
+                    uuids = re.findall(r"canbus_uuid:\s*([a-fA-F0-9]+)", content)
+                    
+                    if uuids:
+                        log(f"Found UUIDs in {folder}: {uuids}", False)
+                        uuid_mapping[folder] = uuids
+                        firmware_available.append(folder)
     except Exception as e:
         log(str(e), True)
     
