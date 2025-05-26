@@ -34,7 +34,7 @@ Install OctoEverywhere and activate the shared connection: <https://octoeverywhe
 
 ### CAN
 
-Then refer to **docs/octopus_can_bridge_setup.md** for further instructions.  
+Then refer to **docs/octopus_can_bridge_setup.pdf** for further instructions.  
 
 Set up the CAN network interface if it hasn't been configured already :
 `sudo nano /etc/network/interfaces.d/can0`
