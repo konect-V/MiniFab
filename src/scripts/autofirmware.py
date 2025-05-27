@@ -169,10 +169,10 @@ def autofirmware_daemon():
                         current_toolhead = find_folder_by_uuid(uuid, uuid_mapping)
                         if current_toolhead != None:
                             firmware_change(current_toolhead)
-            elif not is_firmware_ready():
-                log("Error with Klipper : try default firmware", True)
-                current_toolhead = default_firmware
-                firmware_change(current_toolhead)
+                elif not is_firmware_ready():
+                    log("Error with Klipper : try default firmware", True)
+                    current_toolhead = default_firmware
+                    firmware_change(current_toolhead)
 
         time.sleep(5)
 
