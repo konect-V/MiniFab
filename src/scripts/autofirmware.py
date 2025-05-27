@@ -117,9 +117,7 @@ def is_ready_or_startup():
     command = "curl 0.0.0.0/printer/info"
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
     if '"state": "ready"' in result.stdout or '"state": "startup"' in result.stdout:
-        if '"state": "ready"' in result.stdout:
-            log("Printer is ready", False)
-        else:
+        if '"state": "startup"' in result.stdout:
             log("Printer is starting up", False)
         return True
     log(result.stdout, False)
@@ -155,6 +153,7 @@ def autofirmware_daemon():
     while True:
         if not forced:
             if not is_ready_or_startup() or current_toolhead == default_firmware:
+                log("Printer is not ready or still in default firmware", False)
                 uuids = get_canbus_uuid()
                 
                 if uuids:
