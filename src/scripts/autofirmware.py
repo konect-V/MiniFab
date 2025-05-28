@@ -131,6 +131,14 @@ def is_firmware_ready():
     log(result.stdout, False)
     return False
 
+def is_firmware_starting():
+    command = "curl 0.0.0.0/printer/info"
+    result = subprocess.run(command, shell=True, text=True, capture_output=True)
+    if '"state": "startup"' in result.stdout:
+        return True
+    log(result.stdout, False)
+    return False
+
 def firmware_swap(name):
     confswap(name)
 
@@ -169,7 +177,7 @@ def autofirmware_daemon():
                         current_toolhead = find_folder_by_uuid(uuid, uuid_mapping)
                         if current_toolhead != None:
                             firmware_change(current_toolhead)
-                elif not is_firmware_ready():
+                elif not is_firmware_ready() and not is_firmware_starting():
                     log("Error with Klipper : try default firmware", True)
                     current_toolhead = default_firmware
                     firmware_change(current_toolhead)
