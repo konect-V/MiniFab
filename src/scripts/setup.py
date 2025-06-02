@@ -166,7 +166,97 @@ def check_dir():
         return False
     return True
 
-def menu(force_setup, clear_config, no_check):
+def add_password_mainsail():
+    password_file = "/etc/nginx/0-passwords.txt"
+    nginx_conf = "/etc/nginx/sites-available/mainsail"
+    auth_basic_line = '    auth_basic            "Minifab login";\n'
+    auth_basic_user_file_line = f'    auth_basic_user_file  {password_file};\n'
+
+    subprocess.run(["sudo", "apt-get", "update"], check=True)
+    subprocess.run(["sudo", "apt-get", "install", "apache2-utils", "-y"], check=True)
+    user_name = input("Enter the username for Mainsail: ").strip()
+    password = input("Enter the password for Mainsail: ").strip()
+
+    # Check if user already exists in the password file
+    user_exists = False
+    if os.path.exists(password_file):
+        with open(password_file, "r") as f:
+            for line in f:
+                if line.startswith(user_name + ":"):
+                    user_exists = True
+                    break
+
+    if user_exists:
+        print(f"User '{user_name}' already exists in {password_file}.")
+        return
+    else:
+        if not os.path.exists(password_file):
+            subprocess.run(["sudo", "htpasswd", "-b", "-c", password_file, user_name, password], check=True)
+        else:
+            subprocess.run(["sudo", "htpasswd", "-b", password_file, user_name, password], check=True)
+
+    # Ensure auth_basic lines are present in nginx config
+    # Read nginx config with sudo
+    result = subprocess.run(
+        ["sudo", "cat", nginx_conf],
+        stdout=subprocess.PIPE,
+        check=True,
+        text=True
+    )
+    lines = result.stdout.splitlines(keepends=True)
+
+    in_server = False
+    server_brace_level = 0
+    auth_basic_present = False
+    auth_basic_user_file_present = False
+    new_lines = []
+    for line in lines:
+        stripped = line.strip()
+        # Detect start of server block
+        if not in_server and stripped.startswith("server"):
+            in_server = True
+        if in_server and "{" in line:
+            server_brace_level += line.count("{")
+        if in_server and "}" in line:
+            server_brace_level -= line.count("}")
+        # Track if auth lines are present at server block level
+        if in_server and server_brace_level == 1:
+            if "auth_basic" in stripped and "auth_basic_user_file" not in stripped:
+                auth_basic_present = True
+            if "auth_basic_user_file" in stripped:
+                auth_basic_user_file_present = True
+        # Before closing the top-level server block, insert if missing
+        if in_server and server_brace_level == 0 and "}" in line:
+            if not auth_basic_present:
+                new_lines.append(auth_basic_line)
+            if not auth_basic_user_file_present:
+                new_lines.append(auth_basic_user_file_line)
+            in_server = False
+            auth_basic_present = False
+            auth_basic_user_file_present = False
+        new_lines.append(line)
+
+    # Write back using sudo tee
+    new_content = "".join(new_lines)
+    proc = subprocess.Popen(
+        ["sudo", "tee", nginx_conf],
+        stdin=subprocess.PIPE,
+        text=True
+    )
+
+    proc.communicate(new_content)
+    if proc.returncode != 0:
+        print("Failed to write nginx config file.")
+        return
+
+    print("Nginx configuration updated. Reloading nginx...")
+    subprocess.run(["sudo", "service", "nginx", "restart"], check=True)
+    subprocess.run(["sudo", "systemctl", "restart", "nginx"], check=True)
+
+def menu(force_setup, clear_config, no_check, add_password):
+    if add_password:
+        add_password_mainsail()
+        return
     # Check if setup has already been done by reading the status file
     if not check_username() and not no_check:
         return
@@ -189,5 +279,7 @@ if __name__ == '__main__':
     parser.add_argument('-f', action='store_true')
     parser.add_argument('-c', action='store_true')
     parser.add_argument('-nc', action='store_true')
+    parser.add_argument('-p', action='store_true')
     args = parser.parse_args()
-    menu(args.f, args.c, args.nc)
+
+    menu(args.f, args.c, args.nc, args.p)
