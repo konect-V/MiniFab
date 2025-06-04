@@ -171,6 +171,11 @@ def add_password_mainsail():
     nginx_conf = "/etc/nginx/sites-available/mainsail"
     auth_basic_line = '    auth_basic            "Minifab login";\n'
     auth_basic_user_file_line = f'    auth_basic_user_file  {password_file};\n'
+    satisfy_any_block = (
+        "    satisfy any;\n"
+        "    allow 127.0.0.1;\n"
+        "    deny  all;\n"
+    )
 
     subprocess.run(["sudo", "apt-get", "update"], check=True)
     subprocess.run(["sudo", "apt-get", "install", "apache2-utils", "-y"], check=True)
@@ -188,7 +193,6 @@ def add_password_mainsail():
 
     if user_exists:
         print(f"User '{user_name}' already exists in {password_file}.")
-        return
     else:
         if not os.path.exists(password_file):
             subprocess.run(["sudo", "htpasswd", "-b", "-c", password_file, user_name, password], check=True)
@@ -209,6 +213,7 @@ def add_password_mainsail():
     server_brace_level = 0
     auth_basic_present = False
     auth_basic_user_file_present = False
+    satisfy_any_present = False
     new_lines = []
     for line in lines:
         stripped = line.strip()
@@ -225,15 +230,20 @@ def add_password_mainsail():
                 auth_basic_present = True
             if "auth_basic_user_file" in stripped:
                 auth_basic_user_file_present = True
+            if "satisfy any" in stripped:
+                satisfy_any_present = True
         # Before closing the top-level server block, insert if missing
         if in_server and server_brace_level == 0 and "}" in line:
             if not auth_basic_present:
                 new_lines.append(auth_basic_line)
             if not auth_basic_user_file_present:
                 new_lines.append(auth_basic_user_file_line)
+            if not satisfy_any_present:
+                new_lines.append(satisfy_any_block)
             in_server = False
             auth_basic_present = False
             auth_basic_user_file_present = False
+            satisfy_any_present = False
         new_lines.append(line)
 
     # Write back using sudo tee
