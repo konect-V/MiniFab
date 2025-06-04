@@ -62,7 +62,7 @@ def install_kiauh():
         os.chdir(kiauh_path)
 
         # Install gcode_shell_command from KIAUH
-        print("Follow the instructions in KIAUH to install KlipperScreen (use xserver), OctoEverywhere (configure with an account) and gcode_shell_command (B->Advanced->G Code Shell Command->Y->n->B->Q) from KIAUH...")
+        print("Follow the instructions in KIAUH to install KlipperScreen (use xserver), crowsnest, OctoEverywhere (configure with an account) and gcode_shell_command (B->Advanced->G Code Shell Command->Y->n->B->Q) from KIAUH...")
         ask_confirmation()
         subprocess.run(["./kiauh.sh"], check=True)  # Launch KIAUH script to access installation options
 
