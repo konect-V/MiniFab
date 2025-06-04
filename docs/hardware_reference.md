@@ -1,58 +1,18 @@
 # MiniFab Hardware Reference
 
-## System Specifications
+## Configuration Sources
 
-### Main Controller
-- **Model**: Raspberry Pi 4 (recommended)
-- **RAM**: 4GB minimum
-- **Storage**: 16GB microSD card minimum (32GB recommended)
-- **OS**: Raspberry Pi OS Lite / MainsailOS
-- **Connectivity**: Ethernet/WiFi, USB 2.0/3.0
-
-### Machine Controller
-- **Model**: BigTreeTech Octopus V1.1
-- **Microcontroller**: STM32F446ZET6
-- **Drivers**: TMC2209 (integrated) - 6 drivers total
-- **CAN UUID**: `007b91d4791b`
-- **Interface**: CAN bus 500kbps, USB to Raspberry Pi
-- **Power**: 24V input, provides power to CAN bus and tool heads
-
-### Tool Heads
-
-#### Tool Head UUID Mapping
-- **Mill**: `0fbff82fd51f` (EBBCanMILL)
-- **Print**: `c64b129f89d0` (EBBCanPRINT)
-- **Pellet**: `38a6930ee689` (EBBCanPELLET)
-- **PenPlt**: `none` (EBBCanPENPLT)
-
-#### Common Tool Head Features
-All EBB42 v1.2 boards include:
-- **ADXL345**: Accelerometer for input shaping (SPI: PB12,PB10,PB11,PB2)
-- **CAN Communication**: 500kbps bus with unique UUID identification
-- **24V Power**: Via CAN connector
+### Main Configuration Files
+- **Common pins**: `src/config/common/board_pins.cfg`
+- **Motor configuration**: `src/config/common/stepper.cfg`
+- **B-axis specific**: `src/config/b_axis/stepper.cfg`
+- **Tool-specific configs**: `src/config/toolheads/{toolhead}/machine.cfg`
+- **Probe configurations**: `src/config/toolheads/{print,pellet}/probe.cfg`
+- **Spindle configuration**: `src/config/toolheads/mill/spindle.cfg`
 
 ## Pin Mapping - Octopus V1.1
 
-### Configuration Files
-
-### Configuration Files
-
-### Configuration Files
-
-**Base Path**: `src/config/`
-
-**Common configurations**:
-- **`common/board_pins.cfg`**: Pin definitions (spindle PD12, vacuum PA2, LEDs PE5/PB0)
-- **`common/stepper.cfg`**: Main motor configuration (X, Y, Y1, Z, Z1 axes)
-- **`common/main_printer.cfg`**: Base machine configuration and includes
-
-**B-Axis**: `b_axis/stepper.cfg` (rotation axis: 54:1 gear ratio, 360mm rotation_distance)
-
-**Tool-specific configurations**: `toolheads/{toolhead}/`
-- **`machine.cfg`**: Tool-specific pins, sensors, and extruder config
-- **`probe.cfg`**: Probe configuration (print/pellet modes only)
-- **`spindle.cfg`**: Spindle control and safety configuration (mill mode only)
-- **`macro.cfg`**: Tool-specific G-code macros
+**Configuration source**: `src/config/common/board_pins.cfg` and `src/config/common/stepper.cfg`
 
 ### Main Motors
 
@@ -65,15 +25,11 @@ All EBB42 v1.2 boards include:
 | Z1 (Driver 4) | PF9 | PF10 | !PG2 | - | Secondary Z axis |
 | B (Driver 5) | PC13 | !PF0 | !PF1 | - | Rotation axis |
 
-**Motor Specifications**:
-- **Microstepping**: 16 microsteps
-- **Rotation distance**: 
-  - X,Y: 5mm (ball screws)
-  - Y1: 4mm (ball screws)  
-  - Z,Z1: 4mm (ball screws)
-  - B: 360mm with 54:1 gear ratio (1mm = 1°)
+**B-axis details**: See `src/config/b_axis/stepper.cfg` - 54:1 gear ratio, 360° rotation distance
 
 ### Spindle Control and Actuators
+
+**Configuration source**: `src/config/common/board_pins.cfg`
 
 | Function | Pin | Type | Notes |
 |----------|-----|------|-------|
@@ -84,13 +40,11 @@ All EBB42 v1.2 boards include:
 | Electric box LED | PE5 (FAN1) | PWM | Electrical box lighting |
 | Door detection | PG11 (DIAG3) | Input | Mill safety |
 
-**Spindle Configuration**:
-- **Max speed**: 24000 RPM
-- **Control**: 0-24000 RPM via PWM 0-1.0 (PD12/FAN2)
-- **Safety**: Immediate stop if door opened (PG11/DIAG3 in spindle.cfg)
-- **Deceleration ramp**: 100 steps over 10 seconds
+**Spindle control implementation**: See `src/config/toolheads/mill/spindle.cfg` for M3/M4/M5 macros
 
 ### Lighting and Signaling
+
+**Configuration source**: `src/config/common/board_pins.cfg`
 
 | Function | Pin | Type | Specifications |
 |----------|-----|------|----------------|
@@ -100,6 +54,8 @@ All EBB42 v1.2 boards include:
 ## Pin Mapping - EBB42 Tool Heads
 
 ### Mill Head (EBBCanMILL - `0fbff82fd51f`)
+
+**Configuration source**: `src/config/toolheads/mill/machine.cfg`
 
 | Function | Pin | Type | Notes |
 |----------|-----|------|-------|
@@ -112,6 +68,8 @@ All EBB42 v1.2 boards include:
 | MISO | PB2 | SPI | Master In |
 
 ### 3D Print Head (EBBCanPRINT - `c64b129f89d0`)
+
+**Configuration source**: `src/config/toolheads/print/machine.cfg` and `src/config/toolheads/print/probe.cfg`
 
 | Function | Pin | Type | Specifications |
 |----------|-----|------|----------------|
@@ -131,15 +89,9 @@ All EBB42 v1.2 boards include:
 | Probe signal | !PB8 | Input | Contact detection |
 | **ADXL345** | PB12,PB10,PB11,PB2 | SPI | Resonance calibration |
 
-**Extruder Specifications**:
-- **Microstepping**: 64 microsteps
-- **Rotation distance**: 3.433mm
-- **Nozzle diameter**: 0.4mm
-- **Filament diameter**: 1.75mm
-- **Max temperature**: 260°C
-- **Min extrusion temperature**: 180°C
-
 ### Pellet Head (EBBCanPELLET - `38a6930ee689`)
+
+**Configuration source**: `src/config/toolheads/pellet/machine.cfg` and `src/config/toolheads/pellet/probe.cfg`
 
 | Function | Pin | Type | Specifications |
 |----------|-----|------|----------------|
@@ -157,49 +109,20 @@ All EBB42 v1.2 boards include:
 | **Probe** | PB9, !PB8 | PWM/Input | Probe system |
 | **ADXL345** | PB12,PB10,PB11,PB2 | SPI | Calibration |
 
-**Pellet Specifications**:
-- **Rotation distance**: 1.7mm
-- **Nozzle diameter**: 0.8mm
-- **Filament diameter**: 0.8mm (pellets)
-- **Max temperature**: 300°C
+### Pen Plotter Head (EBBCanPENPLT)
 
-### Pen Plotter Head (EBBCanPENPLT - `unknow`)
+**Configuration source**: `src/config/toolheads/penplt/machine.cfg`
 
 | Function | Pin | Type | Notes |
 |----------|-----|------|-------|
 | Pen endstop | PB6 | Input | Pen position detection |
 | **ADXL345** | PB12,PB10,PB11,PB2 | SPI | Vibration calibration |
 
-**Pin Details**:
-- CS: PB12, SCLK: PB10, MOSI: PB11, MISO: PB2
-
-## B-Axis (4th Axis) Implementation
-
-### Hardware Configuration
-- **Stepper**: Manual stepper on Driver 5 (PC13, !PF0, !PF1)
-- **Gear Ratio**: 54:1 reduction
-- **Rotation Distance**: 360mm (1mm = 1°)
-- **Microstepping**: 16 microsteps
-
-### Software Implementation
-The B-axis extends standard G-code commands through macro interception:
-
-```gcode
-G0 X100 Y50 Z10 B45    # Rapid move with 45° rotation
-G1 X200 B90 F1000      # Linear move with rotation to 90°
-G2 X50 Y50 I25 J0 B180 # Clockwise arc with 180° rotation
-G3 X75 Y25 I10 J10 B270 # Counter-clockwise arc with 270° rotation
-```
-
-**Macro System**: 
-- `SET_B_POSITION`: Core B-axis positioning with angle normalization
-- Intercepted G-code: G0, G1, G2, G3 macros parse B parameter
-- Position tracking: Maintains `b_position` variable for continuous rotation
-- Speed calculation: Converts feedrate to angular velocity using perimeter setting
-
 ## Heated Bed and Common Sensors
 
-### Heated Bed (Shared Print/Pellet)
+### Heated Bed
+
+**Configuration source**: `src/config/toolheads/{print,pellet}/machine.cfg`
 
 | Function | Pin | Type | Specifications |
 |----------|-----|------|----------------|
@@ -207,166 +130,16 @@ G3 X75 Y25 I10 J10 B270 # Counter-clockwise arc with 270° rotation
 | Thermistor | PF3 (TB) | Analog | ATC Semitec 104GT-2 |
 | Max temperature | | | 130°C |
 
-## CAN Bus Configuration
+## Quick Reference Links
 
-### Network Parameters
-```bash
-# /etc/network/interfaces.d/can0
-allow-hotplug can0 
-iface can0 can static 
-    bitrate 500000 
-    up ifconfig $IFACE txqueuelen 128
-```
+### For detailed configuration of specific components:
+- **Spindle macros (M3/M4/M5)**: `src/config/toolheads/mill/spindle.cfg`
+- **Probe macros**: `src/config/toolheads/{print,pellet}/probe.cfg`
+- **B-axis macros**: `src/config/b_axis/macro.cfg`
+- **Tool-specific macros**: `src/config/toolheads/{toolhead}/macro.cfg`
+- **Common macros**: `src/config/common/macro.cfg`
 
-### UUID by Tool Head
-- **Mill**: `0fbff82fd51f` (EBBCanMILL)
-- **Print**: `c64b129f89d0` (EBBCanPRINT)  
-- **Pellet**: `38a6930ee689` (EBBCanPELLET)
-- **PenPlt**: `unknow` (EBBCanPENPLT) - needs configuration
-
-## Electrical Specifications
-
-### Power Supply
-- **Main voltage**: 24V DC
-- **Max consumption**: 
-  - Octopus V1.1: ~5A
-  - EBB42: ~2A per head
-  - Spindle: ~8A max
-  - Heated bed: ~10A max
-
-### Connectors and Wiring
-
-#### CAN Bus
-- **Topology**: Linear bus with 120Ω terminations
-- **Max length**: 40m at 500kbps
-- **Connectors**: JST-XH 4 pins (CAN_H, CAN_L, 24V, GND)
-
-#### Tool Head Power
-- **Voltage**: 24V via CAN bus
-- **Protection**: Individual fuses recommended
-- **Consumption**: 1-2A per head depending on mode
-
-## Dimensions and Kinematics
-
-### Machine Limits
-- **X travel**: 220mm (position_max)
-- **Y travel**: 300mm (position_max)
-- **Z travel**: 250mm (position_max, position_min -25mm)
-- **B rotation**: 360° continuous
-
-### Speeds and Accelerations
-```ini
-max_velocity = 150          # mm/s
-max_accel = 750            # mm/s²
-max_z_velocity = 20        # mm/s
-max_z_accel = 100          # mm/s²
-```
-
-### Homing
-- **X, Y**: Homing towards 0 (min endstops)
-- **Z**: Homing towards maximum (position_endstop = 250)
-- **Homing speed**: 10 mm/s
-- **Second speed**: 2 mm/s (precision)
-
-## Sensors and Feedback
-
-### ADXL345 (All Heads)
-- **Interface**: SPI software
-- **Axes**: x,y,z mapping
-- **Usage**: Resonance calibration, vibration detection
-- **Frequency**: Configurable per mode
-
-### Thermistors
-- **Print**: Generic 3950 (hotend), 50°C fan thresholds
-- **Pellet**: NTC 100K MGB18-104F39050L32 (hotend), 40°C fan thresholds
-- **Mill**: ATC Semitec 104GT-2 (spindle)
-- **Bed**: ATC Semitec 104GT-2 (shared print/pellet modes)
-
-### Contact Probes
-- **Type**: Servo-deployable with microswitch (PB9 servo, !PB8 signal)
-- **Precision**: ±0.05mm (samples_tolerance)
-- **Repeatability**: 2 samples minimum
-- **Offsets**: 
-  - Print mode: X=-40, Y=-35, Z=0.8
-  - Pellet mode: X=0, Y=0, Z=0.3
-
-## Extended G-Code Implementation
-
-### Tool-Specific Commands
-
-#### Mill Mode (M3/M4/M5/M6)
-```gcode
-M3 S12000      # Spindle clockwise at 12000 RPM
-M4 S8000       # Spindle counter-clockwise at 8000 RPM  
-M5             # Spindle stop with deceleration ramp
-M6             # Manual tool change procedure
-```
-
-#### Print/Pellet Modes
-```gcode
-G29            # Automatic bed mesh calibration
-PROBE_DOWN     # Deploy servo probe
-PROBE_UP       # Retract servo probe
-```
-
-#### Common Macros
-```gcode
-G92 X0 Y0 Z0   # Extended origin setting (overridden)
-ORIGIN         # Set current position as origin
-MANUAL_HOME    # Set kinematic position without homing
-```
-
-### Safety Features
-- **Mill**: Door switch (PG11) triggers M112 emergency stop
-- **Print**: Temperature monitoring prevents cold extrusion
-- **Pen Plotter**: End-effector sensor (PB6) stops on contact
-- **All modes**: CAN heartbeat monitoring for tool head connection
-
-## Maintenance and Diagnostics
-
-### Regular Check Points
-1. **CAN bus voltages**: Verify 24V and differential signals
-2. **Temperatures**: Monitoring via thermistors
-3. **Vibrations**: ADXL345 analysis for mechanical wear
-4. **Endstops**: Safety function testing
-5. **Connectors**: Seal and contact verification
-
-### Diagnostic Tools
-```bash
-# CAN bus test
-python /home/minifab/klipper/scripts/canbus_query.py can0
-
-# System logs
-journalctl -u klipper
-tail -f /tmp/klippy.log
-
-# MiniFab interface
-curl localhost:8000/toolhead
-curl localhost:8000/last_error
-```
-
-### Interface Customization
-
-#### Available Themes
-- **Mainsail**: `src/mainsail_theme/custom.css`
-- **KlipperScreen**: `src/klipperscreen_theme/`
-  - `style.conf`: Theme configuration
-  - `style.css`: Custom styles
-  - `images/`: Icons and images
-
-#### Theme Installation
-Themes are automatically installed via `setup.py`:
-- Mainsail theme → `~/.theme/`
-- KlipperScreen theme → `~/KlipperScreen/styles/minifab/`
-
-### Component Replacement
-
-#### Tool Heads
-1. Configure new UUID in corresponding printer.cfg
-2. Flash Klipper firmware on new board
-3. Test automatic detection via web interface
-
-#### Sensors
-- Thermistors: Verify resistance at room temperature
-- Endstops: Test open/closed circuit continuity
-- ADXL345: Verify SPI communication and axes
+### For system-level configuration:
+- **Main printer config**: `src/config/common/main_printer.cfg`
+- **Moonraker API**: `src/config/moonraker.conf`
+- **OctoEverywhere**: `src/config/octoeverywhere.conf`
