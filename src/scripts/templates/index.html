@@ -179,7 +179,7 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('toolhead-img').src = `{{ url_for('static', filename='') }}${data.toolhead}.svg`;
-                    document.getElementById('toolhead-text').textContent = `Current toolhead : ${data.toolhead}, Forced : ${data.forced}`;
+                    document.getElementById('toolhead-text').textContent = `Current toolhead : ${data.toolhead}, Forced : ${data.forced}, Firmware allow reload : ${data.reload_allowed_firmware}`;
                 });
         }
         setInterval(() => {

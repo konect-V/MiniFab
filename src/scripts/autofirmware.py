@@ -12,9 +12,19 @@ last_error_str = ""
 current_toolhead = ""
 firmware_available = []
 forced = False
+reload_allowed_firmware = True
 
 config_dir = "/home/minifab/printer_data/config/toolheads"
 get_canbus_uuid_command = "/home/minifab/klippy-env/bin/python /home/minifab/klipper/scripts/canbus_query.py can0"
+log_dir = "/home/minifab/printer_data/logs"
+
+os.makedirs(log_dir, exist_ok=True)
+log_file_id = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+log_file_path = os.path.join(log_dir, f"minifab_autofirmware_log_{log_file_id}.log")
+log_file_handle = open(log_file_path, "a")
+
+def get_reload_allowed_firmware():
+    return reload_allowed_firmware
 
 def get_forced():
     return forced
@@ -39,7 +49,11 @@ def log(msg, is_error):
     msg = msg.replace("\n", "")
     str = f"{current_time} : {calframe[1][3]} : {msg}"    
     logs.append(str)
-
+    try:
+        log_file_handle.write(str + "\n")
+        log_file_handle.flush()
+    except Exception:
+        pass
     if is_error:
         last_error_str = str
 
@@ -154,7 +168,9 @@ def firmware_change(name):
     log(f"Firmware changed to : {name}", False) 
 
 def autofirmware_daemon():
-    global current_toolhead
+    global current_toolhead, reload_allowed_firmware, forced
+
+    log("Autofirmware daemon started", False)
 
     uuid_mapping = extract_canbus_uuids()
 
@@ -167,7 +183,7 @@ def autofirmware_daemon():
         time.sleep(5)
 
     while True:
-        if not forced:
+        if not forced and reload_allowed_firmware:
             if not is_ready_or_startup() or current_toolhead == default_firmware:
                 log("Printer is not ready or still in default firmware", False)
                 uuids = get_canbus_uuid()
@@ -177,11 +193,12 @@ def autofirmware_daemon():
                         current_toolhead = find_folder_by_uuid(uuid, uuid_mapping)
                         if current_toolhead != None:
                             firmware_change(current_toolhead)
+                            reload_allowed_firmware = False
                 elif not is_firmware_ready() and not is_firmware_starting() and current_toolhead != default_firmware:
                     log("Error with Klipper : try default firmware", True)
                     current_toolhead = default_firmware
                     firmware_change(current_toolhead)
-
+                    reload_allowed_firmware = False
         time.sleep(5)
 
 def force_autofirmware(firmware):
@@ -190,7 +207,14 @@ def force_autofirmware(firmware):
         forced = False
         current_toolhead = default_firmware
         firmware_change(default_firmware)
+        allow_firmware_reload()
     else: 
         forced = True
         current_toolhead = firmware
         firmware_change(firmware)
+
+def allow_firmware_reload():
+    global reload_allowed_firmware
+    reload_allowed_firmware = True
+    log("Firmware reload allowed", False)
+    return True

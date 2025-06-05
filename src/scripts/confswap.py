@@ -29,7 +29,7 @@ def confswap(config_name):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python script.py <config_folder_name>")
+        print("Usage: python confswap.py <config_folder_name>")
         sys.exit(1)
     
     config_folder = sys.argv[1]
