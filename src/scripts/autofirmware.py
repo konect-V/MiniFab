@@ -198,7 +198,6 @@ def autofirmware_daemon():
                     log("Error with Klipper : try default firmware", True)
                     current_toolhead = default_firmware
                     firmware_change(current_toolhead)
-                    reload_allowed_firmware = False
         time.sleep(5)
 
 def force_autofirmware(firmware):
