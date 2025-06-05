@@ -30,7 +30,7 @@
 | EBB42v1.2_Internal/EBBCanPELLET:PB2  | ADXL345 MISO      | toolheads/pellet/machine.cfg                   |
 | EBB42v1.2_Servo/EBBCanPELLET:PB9    | Servo             | toolheads/pellet/probe.cfg                     |
 | EBB42v1.2_Probe/EBBCanPELLET:PB8    | Probe             | toolheads/pellet/probe.cfg                     |
-| OctopusV1.1_FAN0/PE5                | Spindle speed control | board_pins.cfg                              |
+| OctopusV1.1_FAN0/PA8                | Spindle speed control | board_pins.cfg                              |
 | OctopusV1.1_RGB_LED/PB0             | Neopixel strip     | main_printer.cfg                               |
 | OctopusV1.1_Internal_Driver0/PF13   | Stepper X step     | stepper.cfg                                    |
 | OctopusV1.1_Internal_Driver0/PF12   | Stepper X dir      | stepper.cfg                                    |
@@ -66,4 +66,6 @@
 | EBB42v1.2_Internal/EBBCanMILL:PB6    | Spindle endstop    | toolheads/mill/machine.cfg                     |
 | EBB42v1.2_TH0/EBBCanMILL:PA3         | Spindle thermistor | toolheads/mill/machine.cfg                     |
 | OctopusV1.1_HE1/PA3                  | Vacuum socket      | board_pins.cfg                                 |
-| OctopusV1.1_FAN2/PD15                | Machining box fan  | board_pins.cfg                                 |
+| OctopusV1.1_FAN1/PE5                 | Electric box fan   | board_pins.cfg                                 |
+| OctopusV1.1_FAN2/PD12                | Machining box fan  | board_pins.cfg                                 |
+
