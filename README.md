@@ -19,17 +19,17 @@ MiniFab rework digital manufacturing by transforming a single machine into **thr
 
 ## ✨ Why MiniFab?
 
-### 🔄 **Revolutionary Versatility**
+### 🔄 **Versatility**
 - **3 machines in 1**: CNC, 3D printing, plotting
 - **Automatic switching**: Intelligent toolhead detection
 - **Unified interface**: Single interface for all modes
 
-### 🧠 **Embedded Intelligence**
+### 🧠 **A Bit of Intelligence**
 - **Automatic CAN detection**: Instant tool recognition
 - **Dynamic configuration**: Automatic parameter adaptation
 - **Integrated safety**: Mode-specific protections
 
-### 🎯 **Optimized Performance**
+### 🎯 **Performance**
 - **Klipper firmware**: Precise and performant control
 - **Rotary B-axis**: Integrated 4-axis manufacturing
 - **Real-time monitoring**: Dedicated web interface
