@@ -1,6 +1,6 @@
 <div align="center">
 
-![MiniFab Logo](docs\assets\img\logo.png)
+![MiniFab Logo](docs/assets/img/logo.png)
 
 # MiniFab
 
