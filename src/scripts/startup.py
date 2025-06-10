@@ -2,9 +2,12 @@ from io import BytesIO, StringIO
 import sys
 import os
 from threading import Thread
-from flask import Flask, jsonify, render_template, request, send_file
-from autofirmware import autofirmware_daemon, force_autofirmware, get_logs, get_last_error, get_current_toolhead, get_current_firmware_available, get_forced, get_reload_allowed_firmware, allow_firmware_reload
+from flask import Flask, jsonify, render_template, request, send_file, send_from_directory
+from autofirmware import log, autofirmware_daemon, force_autofirmware, get_logs, get_last_error, get_current_toolhead, get_current_firmware_available, get_forced, get_reload_allowed_firmware, allow_firmware_reload
 from setup import update_config
+import subprocess
+import threading
+import time
 
 # Create Flask app with correct template and static paths
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -69,6 +72,38 @@ def force_firmware():
 
     except Exception as e:
         return jsonify({"message": f"Error: {str(e)}"}), 500
+
+@app.route('/live_adxl')
+def live_adxl():
+    return render_template('live_adxl.html')
+
+def generate_adxl_image(retries=3, delay=1):
+    for attempt in range(retries):
+        result = subprocess.run(
+            "sudo /home/minifab/klipper/scripts/graph_accelerometer.py /dev/shm/live_adxl.csv -o /home/minifab/MiniFab/resonances.png -c -a z",
+            shell=True,
+            capture_output=True,
+            text=True
+        )
+        if result.returncode == 0:
+            return True
+        else:
+            log(f"Erreur lors de la génération de l'image ADXL (tentative {attempt+1}/{retries}): {result.stderr}", True)
+            time.sleep(delay)
+    return False
+
+@app.route('/adxl_image/<random>')
+def adxl_image(random):
+    generate_adxl_image()
+    return send_from_directory('/home/minifab/MiniFab/', 'resonances.png', mimetype='image/png')
+
+@app.after_request
+def add_header(r):
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 if __name__ == '__main__':
     autofirmware_daemon_thread = Thread(target=autofirmware_daemon)

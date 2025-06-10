@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live ADXL Spectrum</title>
+    <script>
+        intervalId = setInterval(refreshImage, 5000);
+
+        function refreshImage() {
+            const img = document.getElementById('adxl_img');
+            img.src = '/adxl_image/' + new Date().getTime();
+        }
+    </script>
+</head>
+<body>
+    <h1>Spectre Accéléromètre Live</h1>
+    <p id="status"></p>
+    <img id="adxl_img" src="/adxl_image/0" alt="Spectre ADXL" style="max-width:100%;"/>
+</body>
+</html>

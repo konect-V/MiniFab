@@ -214,6 +214,13 @@ def force_autofirmware(firmware):
 
 def allow_firmware_reload():
     global reload_allowed_firmware
+    # Restart CAN driver
+    try:
+        subprocess.run("sudo ip link set can0 down", shell=True, check=True)
+        subprocess.run("sudo ip link set can0 up", shell=True, check=True)
+        log("Driver CAN redémarré avec succès", False)
+    except Exception as e:
+        log(f"Erreur lors du redémarrage du driver CAN: {e}", True)
     reload_allowed_firmware = True
     log("Firmware reload allowed", False)
     return True
